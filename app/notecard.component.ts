@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 import { Notecard } from './notecard';
 import { Item } from './item';
+import { PlayersService } from './players.service';
 
 @Component({
   moduleId: module.id,
@@ -10,8 +11,14 @@ import { Item } from './item';
 })
 export class NotecardComponent implements OnInit {
   notecard: Notecard;
+  players: string[];
+
+  constructor(
+    private playersService: PlayersService
+  ) { }
 
   ngOnInit(): void {
-    this.notecard = new Notecard();
+    this.players = this.playersService.getPlayers();
+    this.notecard = new Notecard("ME", "NO");
   }
 }

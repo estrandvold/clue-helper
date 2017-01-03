@@ -1,39 +1,42 @@
 import { Item } from './item';
 
 export class Notecard {
+  public name: string;
   public suspects: Item[] = [];
   public weapons: Item[] = [];
   public rooms: Item[] = [];
 
-  public constructor() {
+  public constructor(name: string, status: string) {
+    this.name = name;
+
     this.suspects.push(
-      new Item("Miss Scarlet"),
-      new Item("Professor Plum"),
-      new Item("Mrs. Peacock"),
-      new Item("Mr. Green"),
-      new Item("Colonel Mustard"),
-      new Item("Mrs. White")
+      new Item("Miss Scarlet", status),
+      new Item("Professor Plum", status),
+      new Item("Mrs. Peacock", status),
+      new Item("Mr. Green", status),
+      new Item("Colonel Mustard", status),
+      new Item("Mrs. White", status)
     );
 
     this.weapons.push(
-      new Item("Candlestick"),
-      new Item("Knife"),
-      new Item("Lead Pipe"),
-      new Item("Revolver"),
-      new Item("Rope"),
-      new Item("Wrench")
+      new Item("Candlestick", status),
+      new Item("Knife", status),
+      new Item("Lead Pipe", status),
+      new Item("Revolver", status),
+      new Item("Rope", status),
+      new Item("Wrench", status)
     )
 
     this.rooms.push(
-      new Item("Kitchen"),
-      new Item("Ballroom"),
-      new Item("Conservatory"),
-      new Item("Dining Room"),
-      new Item("Billiard Room"),
-      new Item("Library"),
-      new Item("Lounge"),
-      new Item("Hall"),
-      new Item("Study")
+      new Item("Kitchen", status),
+      new Item("Ballroom", status),
+      new Item("Conservatory", status),
+      new Item("Dining Room", status),
+      new Item("Billiard Room", status),
+      new Item("Library", status),
+      new Item("Lounge", status),
+      new Item("Hall", status),
+      new Item("Study", status)
     )
   }
 }

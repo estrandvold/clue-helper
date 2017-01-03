@@ -1,7 +1,12 @@
 <h3>Suspects</h3>
 <alert type="success">hello ng2-bootstrap world ;) </alert>
+<div>
+  {{notecard.name}}
+</div>
 <ul>
   <li *ngFor="let suspect of notecard.suspects">
-    {{suspect.name}}
+    <div>
+      <label>{{suspect.name}}</label> <input [(ngModel)]="suspect.status" />
+    </div>
   </li>
 </ul>

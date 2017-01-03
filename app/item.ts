@@ -1,34 +1,9 @@
 export class Item {
-  private name: string;
-  private alibi: string;
+  name: string;
+  status: string;
 
-  private static readonly MINE = "MINE";
-  private static readonly OTHER = "OTHER";
-  private static readonly UNKNOWN = "UNKNOWN";
-
-  public constructor(name: string) {
+  public constructor(name: string, status: string) {
     this.name = name;
-    this.isUnknown();
+    this.status = status;
   }
-
-  public getAlibi(): string {
-    return this.alibi;
-  }
-
-  public getName(): string {
-    return this.name;
-  }
-
-  public isMine(): void {
-    this.alibi = Item.MINE;
-  }
-
-  public isOther(): void {
-    this.alibi = Item.OTHER;
-  }
-
-  public isUnknown(): void {
-    this.alibi = Item.UNKNOWN;
-  }
-
 }
