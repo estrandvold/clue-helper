@@ -21,4 +21,12 @@ export class NotecardComponent implements OnInit {
     this.players = this.playersService.getPlayers();
     this.notecard = new Notecard("ME", "NO");
   }
+
+  toggleStatus(status: string): string {
+    if(status === "NO") {
+      return "YES";
+    } else {
+      return "NO";
+    }
+  }
 }

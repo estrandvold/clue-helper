@@ -1,12 +1,39 @@
-<h3>Suspects</h3>
-<alert type="success">hello ng2-bootstrap world ;) </alert>
-<div>
+<h3>
   {{notecard.name}}
-</div>
+</h3>
+<p>
+  Suspects
+</p>
 <ul>
   <li *ngFor="let suspect of notecard.suspects">
     <div>
-      <label>{{suspect.name}}</label> <input [(ngModel)]="suspect.status" />
+        <label (click)="suspect.status = toggleStatus(suspect.status)">
+          {{suspect.name}} - {{suspect.status}}
+        </label>
+    </div>
+  </li>
+</ul>
+<p>
+  Weapons
+</p>
+<ul>
+  <li *ngFor="let weapon of notecard.weapons">
+    <div>
+        <label (click)="weapon.status = toggleStatus(weapon.status)">
+          {{weapon.name}} - {{weapon.status}}
+        </label>
+    </div>
+  </li>
+</ul>
+<p>
+  Suspects
+</p>
+<ul>
+  <li *ngFor="let room of notecard.rooms">
+    <div>
+        <label (click)="room.status = toggleStatus(room.status)">
+          {{room.name}} - {{room.status}}
+        </label>
     </div>
   </li>
 </ul>
