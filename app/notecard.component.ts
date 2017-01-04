@@ -1,8 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 
 import { Notecard } from './notecard';
-import { Item } from './item';
-import { PlayersService } from './players.service';
 
 @Component({
   moduleId: module.id,
@@ -10,16 +8,16 @@ import { PlayersService } from './players.service';
   templateUrl: 'notecard.component.html'
 })
 export class NotecardComponent implements OnInit {
-  notecard: Notecard;
-  players: string[];
+  @Input()
+  name: string;
 
-  constructor(
-    private playersService: PlayersService
-  ) { }
+  @Input()
+  defaultStatus: string;
+
+  notecard: Notecard;
 
   ngOnInit(): void {
-    this.players = this.playersService.getPlayers();
-    this.notecard = new Notecard("ME", "NO");
+    this.notecard = new Notecard(this.name, this.defaultStatus);
   }
 
   toggleStatus(status: string): string {
