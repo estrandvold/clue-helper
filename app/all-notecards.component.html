@@ -1,0 +1,23 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-9">
+      <table class="table table-sm table-hover">
+        <thead>
+          <tr>
+            <th></th>
+            <th *ngFor="let notecard of notecards">{{notecard.name}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of items; let i = index">
+            <th scope="row">{{item.name}}</th>
+            <td *ngFor="let notecard of notecards"
+                (click) = "toggleStatus(notecard, i)">
+              {{notecard.items[i].status}}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

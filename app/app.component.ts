@@ -3,6 +3,6 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'my-app',
   template: `
-    <notecard [name]="'ME'" [defaultStatus]="'NO'"></notecard>`,
+    <all-notecards></all-notecards>`,
 })
 export class AppComponent  { }

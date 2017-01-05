@@ -5,8 +5,9 @@ import { FormsModule }   from '@angular/forms';
 import { AlertModule } from 'ng2-bootstrap';
 
 import { AppComponent }  from './app.component';
-import { NotecardComponent } from './notecard.component';
+import { AllNotecardsComponent } from './all-notecards.component';
 import { PlayersService } from './players.service';
+import { ItemsService } from './items.service';
 
 @NgModule({
   imports: [
@@ -16,10 +17,11 @@ import { PlayersService } from './players.service';
   ],
   declarations: [
     AppComponent,
-    NotecardComponent
+    AllNotecardsComponent
   ],
   providers: [
-    PlayersService
+    PlayersService,
+    ItemsService
   ],
   bootstrap: [
     AppComponent
