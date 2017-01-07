@@ -12,7 +12,6 @@ import { ItemsService } from './items.service';
   templateUrl: 'all-notecards.component.html'
 })
 export class AllNotecardsComponent implements OnInit {
-  notecards: Notecard[];
   items: Item[];
   notecardBrain: NotecardBrain;
 
@@ -24,17 +23,17 @@ export class AllNotecardsComponent implements OnInit {
   ngOnInit(): void {
     this.items = this.itemsService.getItems();
 
-    this.notecards = [new Notecard("ME", this.itemsService.getItems(NotecardBrain.NO), true)];
+    let notecards = [new Notecard("ME", this.itemsService.getItems(NotecardBrain.NO), true)];
     let players = this.playersService.getPlayers();
     for(var index in players) {
-      this.notecards.push(
+      notecards.push(
         new Notecard(
           players[index],
           this.itemsService.getItems(NotecardBrain.UNKNOWN), false)
         );
     }
 
-    this.notecardBrain = new NotecardBrain(this.notecards, 0);
+    this.notecardBrain = new NotecardBrain(notecards, 0);
   }
 
   toggleStatus(notecard: Notecard, i: number): void {
@@ -42,6 +41,4 @@ export class AllNotecardsComponent implements OnInit {
       this.notecardBrain.updatePlayerCard(i);
     }
   }
-
-
 }

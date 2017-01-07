@@ -13,6 +13,10 @@ export class NotecardBrain {
     this.playerIndex = playerIndex;
   }
 
+  getNotecards(): Notecard[] {
+    return this.notecards;
+  }
+
   updatePlayerCard(i: number): void {
     let playerNotecard = this.notecards[this.playerIndex];
     let status = playerNotecard.items[i].status;

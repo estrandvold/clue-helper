@@ -5,13 +5,13 @@
         <thead>
           <tr>
             <th></th>
-            <th *ngFor="let notecard of notecards">{{notecard.name}}</th>
+            <th *ngFor="let notecard of notecardBrain.getNotecards()">{{notecard.name}}</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let item of items; let i = index">
             <th scope="row">{{item.name}}</th>
-            <td *ngFor="let notecard of notecards"
+            <td *ngFor="let notecard of notecardBrain.getNotecards()"
                 (click) = "toggleStatus(notecard, i)">
               {{notecard.items[i].status}}
             </td>
@@ -20,7 +20,7 @@
       </table>
     </div>
     <div class="col-md-3">
-      
+
     </div>
   </div>
 </div>
