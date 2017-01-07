@@ -1,7 +1,8 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 import { Notecard } from './notecard';
 import { Item } from './item';
+import { NotecardBrain } from './notecard-brain';
 import { PlayersService } from './players.service';
 import { ItemsService } from './items.service';
 
@@ -13,6 +14,7 @@ import { ItemsService } from './items.service';
 export class AllNotecardsComponent implements OnInit {
   notecards: Notecard[];
   items: Item[];
+  notecardBrain: NotecardBrain;
 
   constructor(
     private playersService: PlayersService,
@@ -22,31 +24,24 @@ export class AllNotecardsComponent implements OnInit {
   ngOnInit(): void {
     this.items = this.itemsService.getItems();
 
-    this.notecards = [new Notecard("ME", this.itemsService.getItems("NO"), true)];
+    this.notecards = [new Notecard("ME", this.itemsService.getItems(NotecardBrain.NO), true)];
     let players = this.playersService.getPlayers();
     for(var index in players) {
-      this.notecards.push(new Notecard(players[index], this.itemsService.getItems("UNKNOWN"), false));
+      this.notecards.push(
+        new Notecard(
+          players[index],
+          this.itemsService.getItems(NotecardBrain.UNKNOWN), false)
+        );
     }
+
+    this.notecardBrain = new NotecardBrain(this.notecards, 0);
   }
 
   toggleStatus(notecard: Notecard, i: number): void {
     if(notecard.canToggle) {
-      this.updatePlayerCard(i);
+      this.notecardBrain.updatePlayerCard(i);
     }
   }
 
-  updatePlayerCard(i: number): void {
-    let playerNotecard = this.notecards[0];
-    let status = playerNotecard.items[i].status;
-    if(status === "NO") {
-      playerNotecard.items[i].status = "YES";
-    } else {
-      playerNotecard.items[i].status = "NO";
-    }
 
-    let othersStatus = (status === "NO") ? "NO" : "UNKNOWN";
-    for(var notecardIndex = 1; notecardIndex < this.notecards.length; notecardIndex++) {
-      this.notecards[notecardIndex].items[i].status = othersStatus;
-    }
-  }
 }
