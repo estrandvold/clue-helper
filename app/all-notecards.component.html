@@ -20,7 +20,22 @@
       </table>
     </div>
     <div class="col-md-3">
-
+      <div class="row">
+        <div class="col-md-12">
+          <label>Current Player</label> {{notecardBrain.getActivePlayer()}}
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+          <button (click)="notecardBrain.previousPlayer()" class="btn btn-secondary">Back</button>
+        </div>
+        <div class="col-md-4">
+          <button class="btn btn-primary">Guess</button>
+        </div>
+        <div class="col-md-4">
+          <button (click)="notecardBrain.nextPlayer()" class="btn btn-secondary">Forward</button>
+        </div>
+      </div>
     </div>
   </div>
 </div>

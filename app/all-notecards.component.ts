@@ -22,7 +22,10 @@ export class AllNotecardsComponent implements OnInit {
 
   ngOnInit(): void {
     this.items = this.itemsService.getItems();
+    this.notecardBrain = this.createNotecardBrain();
+  }
 
+  createNotecardBrain(): NotecardBrain {
     let notecards = [new Notecard("ME", this.itemsService.getItems(NotecardBrain.NO), true)];
     let players = this.playersService.getPlayers();
     for(var index in players) {
@@ -33,7 +36,7 @@ export class AllNotecardsComponent implements OnInit {
         );
     }
 
-    this.notecardBrain = new NotecardBrain(notecards, 0);
+    return new NotecardBrain(notecards, 0);
   }
 
   toggleStatus(notecard: Notecard, i: number): void {
