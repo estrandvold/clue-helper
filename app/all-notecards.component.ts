@@ -13,7 +13,14 @@ import { ItemsService } from './items.service';
 })
 export class AllNotecardsComponent implements OnInit {
   items: Item[];
+  suspects: string[];
+  weapons: string[];
+  rooms: string[];
+  selectedSuspect: string;
+  selectedWeapon: string;
+  selectedRoom: string;
   notecardBrain: NotecardBrain;
+  guessing: boolean;
 
   constructor(
     private playersService: PlayersService,
@@ -22,7 +29,14 @@ export class AllNotecardsComponent implements OnInit {
 
   ngOnInit(): void {
     this.items = this.itemsService.getItems();
+    this.suspects = this.itemsService.getSuspects();
+    this.weapons = this.itemsService.getWeapons();
+    this.rooms = this.itemsService.getRooms();
+    this.selectedSuspect = "";
+    this.selectedWeapon = "";
+    this.selectedRoom = "";
     this.notecardBrain = this.createNotecardBrain();
+    this.guessing = false;
   }
 
   createNotecardBrain(): NotecardBrain {
@@ -37,6 +51,10 @@ export class AllNotecardsComponent implements OnInit {
     }
 
     return new NotecardBrain(notecards, 0);
+  }
+
+  toggleGuessing(): void {
+    this.guessing = (this.guessing) ? false : true;
   }
 
   toggleStatus(notecard: Notecard, i: number): void {

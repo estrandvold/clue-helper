@@ -30,10 +30,51 @@
           <button (click)="notecardBrain.previousPlayer()" class="btn btn-secondary">Back</button>
         </div>
         <div class="col-md-4">
-          <button class="btn btn-primary">Guess</button>
+          <button class="btn btn-primary" (click)="toggleGuessing()">Guess</button>
         </div>
         <div class="col-md-4">
           <button (click)="notecardBrain.nextPlayer()" class="btn btn-secondary">Forward</button>
+        </div>
+      </div>
+      <div *ngIf="guessing">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="btn-group small-margin" dropdown>
+              <button class="btn btn-primary" dropdownToggle>
+                Suspect <span class="caret"></span>
+              </button>
+              <ul dropdownMenu role="menu" aria-labelledby="single-button">
+                <li *ngFor="let suspect of suspects" (click)="selectedSuspect = suspect" role="menuitem"><a class="dropdown-item" href="#">{{suspect}}</a></li>
+              </ul>
+            </div>
+            {{selectedSuspect}}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="btn-group small-margin" dropdown>
+              <button class="btn btn-primary" dropdownToggle>
+                Weapon <span class="caret"></span>
+              </button>
+              <ul dropdownMenu role="menu" aria-labelledby="single-button">
+                <li *ngFor="let weapon of weapons" (click)="selectedWeapon = weapon" role="menuitem"><a class="dropdown-item" href="#">{{weapon}}</a></li>
+              </ul>
+            </div>
+            {{selectedWeapon}}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="btn-group small-margin" dropdown>
+              <button class="btn btn-primary" dropdownToggle>
+                Room <span class="caret"></span>
+              </button>
+              <ul dropdownMenu role="menu" aria-labelledby="single-button">
+                <li *ngFor="let room of rooms" (click)="selectedRoom = room" role="menuitem"><a class="dropdown-item" href="#">{{room}}</a></li>
+              </ul>
+            </div>
+            {{selectedRoom}}
+          </div>
         </div>
       </div>
     </div>

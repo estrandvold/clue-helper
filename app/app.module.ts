@@ -2,7 +2,7 @@ import { NgModule }      from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule }   from '@angular/forms';
 
-import { AlertModule } from 'ng2-bootstrap';
+import { DropdownModule } from 'ng2-bootstrap';
 
 import { AppComponent }  from './app.component';
 import { AllNotecardsComponent } from './all-notecards.component';
@@ -13,7 +13,7 @@ import { ItemsService } from './items.service';
   imports: [
     BrowserModule,
     FormsModule,
-    AlertModule.forRoot()
+    DropdownModule.forRoot()
   ],
   declarations: [
     AppComponent,
