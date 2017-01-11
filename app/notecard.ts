@@ -1,5 +1,4 @@
 import { Item } from './item';
-import { NotecardBrain } from './notecard-brain'
 
 export class Notecard {
   public name: string;
@@ -12,10 +11,10 @@ export class Notecard {
     this.canToggle = canToggle;
   }
 
-  public markNo(name: string) {
+  public mark(name: string, status: string) {
     for(var i in this.items) {
       if(this.items[i].name === name) {
-        this.items[i].status = NotecardBrain.NO;
+        this.items[i].status = status;
       }
     }
   }

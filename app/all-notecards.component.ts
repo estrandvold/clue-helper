@@ -70,6 +70,7 @@ export class AllNotecardsComponent implements OnInit {
   }
 
   learnOpponentHasItem(item: string): void {
+    this.notecardBrain.opponentHasItem(item);
     this.nextPlayer();
   }
 

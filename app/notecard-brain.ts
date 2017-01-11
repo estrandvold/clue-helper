@@ -67,10 +67,31 @@ export class NotecardBrain {
     }
   }
 
+  itemFound(index: number): boolean {
+    for(var i in this.notecards) {
+      if(this.notecards[i].items[index].status === NotecardBrain.YES) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   opponentHasNone(guessInformation: GuessInformation) {
-    this.notecards[this.revealPlayer].markNo(guessInformation.selectedSuspect);
-    this.notecards[this.revealPlayer].markNo(guessInformation.selectedWeapon);
-    this.notecards[this.revealPlayer].markNo(guessInformation.selectedRoom);
+    this.notecards[this.revealPlayer].mark(guessInformation.selectedSuspect, NotecardBrain.NO);
+    this.notecards[this.revealPlayer].mark(guessInformation.selectedWeapon, NotecardBrain.NO);
+    this.notecards[this.revealPlayer].mark(guessInformation.selectedRoom, NotecardBrain.NO);
+  }
+
+  opponentHasItem(item: string) {
+    var opponentIndex = this.revealPlayer;
+    this.notecards.forEach(function(notecard, index) {
+      if(index === opponentIndex) {
+        notecard.mark(item, NotecardBrain.YES);
+      } else {
+        notecard.mark(item, NotecardBrain.NO);
+      }
+    });
   }
 
   private increment(num: number, max: number): number {
