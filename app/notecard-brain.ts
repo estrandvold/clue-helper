@@ -1,9 +1,11 @@
 import { Notecard } from './notecard';
+import { GuessInformation } from './guess-information'
 
 export class NotecardBrain {
   private notecards: Notecard[];
   private playerIndex: number;
   private activePlayer: number;
+  private revealPlayer: number;
 
   public static readonly YES = "YES";
   public static readonly NO = "NO";
@@ -13,6 +15,7 @@ export class NotecardBrain {
     this.notecards = notecards;
     this.playerIndex = playerIndex;
     this.activePlayer = 0;
+    this.revealPlayer = 1;
   }
 
   getNotecards(): Notecard[] {
@@ -23,18 +26,22 @@ export class NotecardBrain {
     return this.notecards[this.activePlayer].name;
   }
 
+  getRevealPlayer(): string {
+    return this.notecards[this.revealPlayer].name;
+  }
+
   nextPlayer(): void {
-    this.activePlayer++;
-    if(this.activePlayer >= this.notecards.length) {
-      this.activePlayer = 0;
-    }
+    this.activePlayer = this.increment(this.activePlayer, this.notecards.length - 1);
+    this.revealPlayer = this.increment(this.activePlayer, this.notecards.length - 1);
+  }
+
+  nextRevealPlayer(): void {
+    this.revealPlayer = this.increment(this.revealPlayer, this.notecards.length - 1);
   }
 
   previousPlayer(): void {
-    this.activePlayer--;
-    if(this.activePlayer < 0) {
-      this.activePlayer = this.notecards.length - 1;
-    }
+    this.activePlayer = this.decrement(this.activePlayer, this.notecards.length - 1);
+    this.revealPlayer = this.increment(this.activePlayer, this.notecards.length - 1);
   }
 
   updatePlayerCard(i: number): void {
@@ -58,5 +65,29 @@ export class NotecardBrain {
       // Update an opponent's card
       this.notecards[notecardIndex].items[i].status = opponentStatus;
     }
+  }
+
+  opponentHasNone(guessInformation: GuessInformation) {
+    this.notecards[this.revealPlayer].markNo(guessInformation.selectedSuspect);
+    this.notecards[this.revealPlayer].markNo(guessInformation.selectedWeapon);
+    this.notecards[this.revealPlayer].markNo(guessInformation.selectedRoom);
+  }
+
+  private increment(num: number, max: number): number {
+    num++;
+    if(num > max) {
+      num = 0;
+    }
+
+    return num;
+  }
+
+  private decrement(num: number, max: number): number {
+    num--;
+    if(num < 0) {
+      num = max;
+    }
+
+    return num;
   }
 }

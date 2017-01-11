@@ -3,6 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule }   from '@angular/forms';
 
 import { DropdownModule } from 'ng2-bootstrap';
+import { ButtonsModule } from 'ng2-bootstrap';
 
 import { AppComponent }  from './app.component';
 import { AllNotecardsComponent } from './all-notecards.component';
@@ -13,7 +14,8 @@ import { ItemsService } from './items.service';
   imports: [
     BrowserModule,
     FormsModule,
-    DropdownModule.forRoot()
+    DropdownModule.forRoot(),
+    ButtonsModule.forRoot()
   ],
   declarations: [
     AppComponent,

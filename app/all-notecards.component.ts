@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 import { Notecard } from './notecard';
 import { Item } from './item';
+import { GuessInformation } from './guess-information';
 import { NotecardBrain } from './notecard-brain';
 import { PlayersService } from './players.service';
 import { ItemsService } from './items.service';
@@ -13,13 +14,8 @@ import { ItemsService } from './items.service';
 })
 export class AllNotecardsComponent implements OnInit {
   items: Item[];
-  suspects: string[];
-  weapons: string[];
-  rooms: string[];
-  selectedSuspect: string;
-  selectedWeapon: string;
-  selectedRoom: string;
   notecardBrain: NotecardBrain;
+  guessInformation: GuessInformation;
   guessing: boolean;
 
   constructor(
@@ -29,12 +25,11 @@ export class AllNotecardsComponent implements OnInit {
 
   ngOnInit(): void {
     this.items = this.itemsService.getItems();
-    this.suspects = this.itemsService.getSuspects();
-    this.weapons = this.itemsService.getWeapons();
-    this.rooms = this.itemsService.getRooms();
-    this.selectedSuspect = "";
-    this.selectedWeapon = "";
-    this.selectedRoom = "";
+    this.guessInformation = new GuessInformation(
+      this.itemsService.getSuspects(),
+      this.itemsService.getWeapons(),
+      this.itemsService.getRooms()
+    );
     this.notecardBrain = this.createNotecardBrain();
     this.guessing = false;
   }
@@ -61,5 +56,24 @@ export class AllNotecardsComponent implements OnInit {
     if(notecard.canToggle) {
       this.notecardBrain.updatePlayerCard(i);
     }
+  }
+
+  nextPlayer(): void {
+    this.guessInformation.clearSelected();
+    this.guessing = false;
+    this.notecardBrain.nextPlayer();
+  }
+
+  learnOpponentHasNone(): void {
+    this.notecardBrain.opponentHasNone(this.guessInformation);
+    this.notecardBrain.nextRevealPlayer();
+  }
+
+  learnOpponentHasItem(item: string): void {
+    this.nextPlayer();
+  }
+
+  learnOpponentHasSomething(): void {
+    this.nextPlayer();
   }
 }

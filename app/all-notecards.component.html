@@ -27,7 +27,7 @@
       </div>
       <div class="row">
         <div class="col-md-4">
-          <button (click)="notecardBrain.previousPlayer()" class="btn btn-secondary">Back</button>
+          <button type="button" (click)="notecardBrain.previousPlayer()" class="btn btn-secondary">Back</button>
         </div>
         <div class="col-md-4">
           <button class="btn btn-primary" (click)="toggleGuessing()">Guess</button>
@@ -44,10 +44,10 @@
                 Suspect <span class="caret"></span>
               </button>
               <ul dropdownMenu role="menu" aria-labelledby="single-button">
-                <li *ngFor="let suspect of suspects" (click)="selectedSuspect = suspect" role="menuitem"><a class="dropdown-item" href="#">{{suspect}}</a></li>
+                <li *ngFor="let suspect of guessInformation.suspects" (click)="guessInformation.selectSuspect(suspect)" role="menuitem"><a class="dropdown-item" href="#">{{suspect}}</a></li>
               </ul>
             </div>
-            {{selectedSuspect}}
+            {{guessInformation.selectedSuspect}}
           </div>
         </div>
         <div class="row">
@@ -57,10 +57,10 @@
                 Weapon <span class="caret"></span>
               </button>
               <ul dropdownMenu role="menu" aria-labelledby="single-button">
-                <li *ngFor="let weapon of weapons" (click)="selectedWeapon = weapon" role="menuitem"><a class="dropdown-item" href="#">{{weapon}}</a></li>
+                <li *ngFor="let weapon of guessInformation.weapons" (click)="guessInformation.selectWeapon(weapon)" role="menuitem"><a class="dropdown-item" href="#">{{weapon}}</a></li>
               </ul>
             </div>
-            {{selectedWeapon}}
+            {{guessInformation.selectedWeapon}}
           </div>
         </div>
         <div class="row">
@@ -70,10 +70,36 @@
                 Room <span class="caret"></span>
               </button>
               <ul dropdownMenu role="menu" aria-labelledby="single-button">
-                <li *ngFor="let room of rooms" (click)="selectedRoom = room" role="menuitem"><a class="dropdown-item" href="#">{{room}}</a></li>
+                <li *ngFor="let room of guessInformation.rooms" (click)="guessInformation.selectRoom(room)" role="menuitem"><a class="dropdown-item" href="#">{{room}}</a></li>
               </ul>
             </div>
-            {{selectedRoom}}
+            {{guessInformation.selectedRoom}}
+          </div>
+        </div>
+        <div *ngIf="guessInformation.isValid()">
+          <div class="row">
+            <div class="col-md-12">
+              Does {{notecardBrain.getRevealPlayer()}} have any?
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <button (click)="learnOpponentHasNone()" class="btn btn-primary small-margin">Nope</button>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="btn-group small-margin" role="group">
+                <button (click)="learnOpponentHasItem(guessInformation.selectedSuspect)" type="button" class="btn btn-primary">{{guessInformation.selectedSuspect}}</button>
+                <button (click)="learnOpponentHasItem(guessInformation.selectedWeapon)" type="button" class="btn btn-primary">{{guessInformation.selectedWeapon}}</button>
+                <button (click)="learnOpponentHasItem(guessInformation.selectedRoom)" type="button" class="btn btn-primary">{{guessInformation.selectedRoom}}</button>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12 small-margin">
+              <button (click)="learnOpponentHasSomething()" class="btn btn-primary">Yes</button>
+            </div>
           </div>
         </div>
       </div>
