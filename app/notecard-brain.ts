@@ -7,10 +7,6 @@ export class NotecardBrain {
   private activePlayer: number;
   private revealPlayer: number;
 
-  public static readonly YES = "YES";
-  public static readonly NO = "NO";
-  public static readonly UNKNOWN = "UNKNOWN";
-
   constructor(notecards: Notecard[], playerIndex: number) {
     this.notecards = notecards;
     this.playerIndex = playerIndex;
@@ -49,15 +45,15 @@ export class NotecardBrain {
     let status = playerNotecard.items[i].status;
 
     // Toggle the player card
-    if(status === NotecardBrain.NO) {
-      playerNotecard.items[i].status = NotecardBrain.YES;
+    if(status === Notecard.NO) {
+      playerNotecard.items[i].status = Notecard.YES;
     } else {
-      playerNotecard.items[i].status = NotecardBrain.NO;
+      playerNotecard.items[i].status = Notecard.NO;
     }
 
     // Set all the opponent's status to UNKNOWN if the player status is NO
     // Set all the opponent's status to NO if the player status is YES
-    let opponentStatus = (status === NotecardBrain.NO) ? NotecardBrain.NO : NotecardBrain.UNKNOWN;
+    let opponentStatus = (status === Notecard.NO) ? Notecard.NO : Notecard.UNKNOWN;
     for(var notecardIndex = 0; notecardIndex < this.notecards.length; notecardIndex++) {
       // Don't update the player's card
       if(notecardIndex === this.playerIndex) { continue; }
@@ -69,7 +65,7 @@ export class NotecardBrain {
 
   itemFound(index: number): boolean {
     for(var i in this.notecards) {
-      if(this.notecards[i].items[index].status === NotecardBrain.YES) {
+      if(this.notecards[i].items[index].status === Notecard.YES) {
         return true;
       }
     }
@@ -78,20 +74,39 @@ export class NotecardBrain {
   }
 
   opponentHasNone(guessInformation: GuessInformation) {
-    this.notecards[this.revealPlayer].mark(guessInformation.selectedSuspect, NotecardBrain.NO);
-    this.notecards[this.revealPlayer].mark(guessInformation.selectedWeapon, NotecardBrain.NO);
-    this.notecards[this.revealPlayer].mark(guessInformation.selectedRoom, NotecardBrain.NO);
+    this.markNo(this.revealPlayer, guessInformation.selectedSuspect);
+    this.markNo(this.revealPlayer, guessInformation.selectedWeapon);
+    this.markNo(this.revealPlayer, guessInformation.selectedRoom);
   }
 
-  opponentHasItem(item: string) {
-    var opponentIndex = this.revealPlayer;
+  opponentHasItem(item: string, opponentIndex?: number): void {
+    if(!opponentIndex) {opponentIndex = this.revealPlayer;}
+
+    var that = this;
     this.notecards.forEach(function(notecard, index) {
       if(index === opponentIndex) {
-        notecard.mark(item, NotecardBrain.YES);
+        notecard.mark(item, Notecard.YES);
       } else {
-        notecard.mark(item, NotecardBrain.NO);
+        that.markNo(index, item);
       }
     });
+  }
+
+  opponentHasOr(guessInformation: GuessInformation): void {
+    let item = this.notecards[this.revealPlayer].addOrItems([
+      guessInformation.selectedSuspect,
+      guessInformation.selectedWeapon,
+      guessInformation.selectedRoom
+    ]);
+
+    if(item) {
+      // We can deduce they have an item!
+      this.opponentHasItem(item);
+    }
+  }
+
+  private markNo(index: number, item: string): void {
+    this.notecards[index].mark(item, Notecard.NO);
   }
 
   private increment(num: number, max: number): number {

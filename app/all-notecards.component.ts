@@ -35,13 +35,13 @@ export class AllNotecardsComponent implements OnInit {
   }
 
   createNotecardBrain(): NotecardBrain {
-    let notecards = [new Notecard("ME", this.itemsService.getItems(NotecardBrain.NO), true)];
+    let notecards = [new Notecard("ME", this.itemsService.getItems(Notecard.NO), true)];
     let players = this.playersService.getPlayers();
     for(var index in players) {
       notecards.push(
         new Notecard(
           players[index],
-          this.itemsService.getItems(NotecardBrain.UNKNOWN), false)
+          this.itemsService.getItems(Notecard.UNKNOWN), false)
         );
     }
 
@@ -75,6 +75,7 @@ export class AllNotecardsComponent implements OnInit {
   }
 
   learnOpponentHasSomething(): void {
+    this.notecardBrain.opponentHasOr(this.guessInformation);
     this.nextPlayer();
   }
 }
