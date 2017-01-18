@@ -42,6 +42,28 @@ export class Notecard {
     }
   }
 
+  public checkOrItems(item: string): string[] {
+    let results: string[] = [];
+
+    for(let i = 0; i < this.ors.length; i++) {
+      let or = this.ors[i];
+      for(let t = 0; t < or.length; t++) {
+        if(or[t] === item) {
+          or.splice(t, 1);
+          t--; // Need to test this to make sure or.length is recalculated
+        }
+      }
+      if(or.length === 1) {
+        // We have reduced an OR and know the opponent has an item
+        results.push(or[0]);
+        this.ors.splice(i, 1);
+        i--; // Need to test this to make sure or.length is recalculated
+      }
+    }
+
+    return results;
+  }
+
   private getStatus(item: string): string {
     for(var i in this.items) {
       if(this.items[i].name === item) {

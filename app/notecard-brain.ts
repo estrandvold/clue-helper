@@ -64,7 +64,7 @@ export class NotecardBrain {
   }
 
   itemFound(index: number): boolean {
-    for(var i in this.notecards) {
+    for(let i = 0; i < this.notecards.length; i++) {
       if(this.notecards[i].items[index].status === Notecard.YES) {
         return true;
       }
@@ -107,6 +107,10 @@ export class NotecardBrain {
 
   private markNo(index: number, item: string): void {
     this.notecards[index].mark(item, Notecard.NO);
+    let items = this.notecards[index].checkOrItems(item);
+    for(let i = 0; i < items.length; i++) {
+      this.opponentHasItem(items[i], index);
+    }
   }
 
   private increment(num: number, max: number): number {
