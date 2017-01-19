@@ -8,16 +8,16 @@ describe('GuessInformation class tests', () => {
   let ROOMS = ["Ballroom", "Kitchen"];
 
   beforeEach(() => {
-    this.guessInformation = new GuessInformation(SUSPECTS, WEAPONS, ROOMS);
+    guessInformation = new GuessInformation(SUSPECTS, WEAPONS, ROOMS);
   });
 
   it('should create a GuessInformation', () => {
-    expect(this.guessInformation.suspects).toBe(SUSPECTS);
-    expect(this.guessInformation.weapons).toBe(WEAPONS);
-    expect(this.guessInformation.rooms).toBe(ROOMS);
-    expect(this.guessInformation.selectedSuspect).toBe("");
-    expect(this.guessInformation.selectedWeapon).toBe("");
-    expect(this.guessInformation.selectedRoom).toBe("");
+    expect(guessInformation.suspects).toBe(SUSPECTS);
+    expect(guessInformation.weapons).toBe(WEAPONS);
+    expect(guessInformation.rooms).toBe(ROOMS);
+    expect(guessInformation.selectedSuspect).toBe("");
+    expect(guessInformation.selectedWeapon).toBe("");
+    expect(guessInformation.selectedRoom).toBe("");
   });
 
   it('should allow selecting and clearing items', () => {
@@ -25,33 +25,33 @@ describe('GuessInformation class tests', () => {
     let weapon = "Pipe";
     let room = "Attic";
 
-    this.guessInformation.selectSuspect(suspect);
-    expect(this.guessInformation.selectedSuspect).toBe(suspect);
+    guessInformation.selectSuspect(suspect);
+    expect(guessInformation.selectedSuspect).toBe(suspect);
 
-    this.guessInformation.selectWeapon(weapon);
-    expect(this.guessInformation.selectedWeapon).toBe(weapon);
+    guessInformation.selectWeapon(weapon);
+    expect(guessInformation.selectedWeapon).toBe(weapon);
 
-    this.guessInformation.selectRoom(room);
-    expect(this.guessInformation.selectedRoom).toBe(room);
+    guessInformation.selectRoom(room);
+    expect(guessInformation.selectedRoom).toBe(room);
 
-    this.guessInformation.clearSelected();
-    expect(this.guessInformation.selectedSuspect).toBe("");
-    expect(this.guessInformation.selectedWeapon).toBe("");
-    expect(this.guessInformation.selectedRoom).toBe("");
+    guessInformation.clearSelected();
+    expect(guessInformation.selectedSuspect).toBe("");
+    expect(guessInformation.selectedWeapon).toBe("");
+    expect(guessInformation.selectedRoom).toBe("");
 
   });
 
   it('should validate a guess', () => {
-    expect(this.guessInformation.isValid()).toBe(false);
+    expect(guessInformation.isValid()).toBe(false);
 
-    this.guessInformation.selectSuspect("Harry");
-    expect(this.guessInformation.isValid()).toBe(false);
+    guessInformation.selectSuspect("Harry");
+    expect(guessInformation.isValid()).toBe(false);
 
-    this.guessInformation.selectWeapon("Pipe");
-    expect(this.guessInformation.isValid()).toBe(false);
+    guessInformation.selectWeapon("Pipe");
+    expect(guessInformation.isValid()).toBe(false);
 
-    this.guessInformation.selectRoom("Attic");
-    expect(this.guessInformation.isValid()).toBe(true);
+    guessInformation.selectRoom("Attic");
+    expect(guessInformation.isValid()).toBe(true);
 
   });
 });

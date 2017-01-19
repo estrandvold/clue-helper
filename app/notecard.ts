@@ -17,7 +17,7 @@ export class Notecard {
   }
 
   public mark(name: string, status: string) {
-    for(var i in this.items) {
+    for(var i = 0; i < this.items.length; i++) {
       if(this.items[i].name === name) {
         this.items[i].status = status;
       }
@@ -37,7 +37,6 @@ export class Notecard {
       return ors[0];
     } else {
       this.ors.push(ors);
-      console.log(this.ors);
       return undefined;
     }
   }
@@ -50,14 +49,14 @@ export class Notecard {
       for(let t = 0; t < or.length; t++) {
         if(or[t] === item) {
           or.splice(t, 1);
-          t--; // Need to test this to make sure or.length is recalculated
+          t--;
         }
       }
       if(or.length === 1) {
         // We have reduced an OR and know the opponent has an item
         results.push(or[0]);
         this.ors.splice(i, 1);
-        i--; // Need to test this to make sure or.length is recalculated
+        i--;
       }
     }
 

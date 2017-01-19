@@ -73,7 +73,7 @@ export class NotecardBrain {
     return false;
   }
 
-  opponentHasNone(guessInformation: GuessInformation) {
+  opponentHasNone(guessInformation: GuessInformation): void {
     this.markNo(this.revealPlayer, guessInformation.selectedSuspect);
     this.markNo(this.revealPlayer, guessInformation.selectedWeapon);
     this.markNo(this.revealPlayer, guessInformation.selectedRoom);
