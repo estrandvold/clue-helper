@@ -34,6 +34,7 @@ export class Notecard {
 
     if(ors.length === 1) {
       // Since there is only one OR we can definitly mark it as YES
+      console.log("OR resolved! - " + ors[0]);
       return ors[0];
     } else {
       this.ors.push(ors);
@@ -54,6 +55,7 @@ export class Notecard {
       }
       if(or.length === 1) {
         // We have reduced an OR and know the opponent has an item
+        console.log("OR resolved in checkOrItems! - " + or[0]);
         results.push(or[0]);
         this.ors.splice(i, 1);
         i--;

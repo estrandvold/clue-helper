@@ -11,7 +11,7 @@
         <tbody>
           <tr *ngFor="let item of items; let i = index" [ngClass]="{'success': notecardBrain.itemFound(i)}">
             <th scope="row">{{item.name}}</th>
-            <td *ngFor="let notecard of notecardBrain.getNotecards()"
+            <td id="status{{j}}-{{i}}" *ngFor="let notecard of notecardBrain.getNotecards(); let j = index"
                 (click) = "toggleStatus(notecard, i)">
               {{notecard.items[i].status}}
             </td>
@@ -21,7 +21,7 @@
     </div>
     <div class="col-md-3">
       <div class="row">
-        <div class="col-md-12">
+        <div id="currentPlayer" class="col-md-12">
           <label>Current Player</label> {{notecardBrain.getActivePlayer()}}
         </div>
       </div>
@@ -36,7 +36,7 @@
           <button (click)="notecardBrain.nextPlayer()" class="btn btn-secondary">Forward</button>
         </div>
       </div>
-      <div *ngIf="guessing">
+      <div id="guessComponent" *ngIf="guessing">
         <div class="row">
           <div class="col-md-12">
             <div class="btn-group small-margin" dropdown>
@@ -78,7 +78,7 @@
         </div>
         <div *ngIf="guessInformation.isValid()">
           <div class="row">
-            <div class="col-md-12">
+            <div id="revealPlayer" class="col-md-12">
               Does {{notecardBrain.getRevealPlayer()}} have any?
             </div>
           </div>
