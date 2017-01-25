@@ -5,8 +5,10 @@ import { FormsModule }   from '@angular/forms';
 import { DropdownModule } from 'ng2-bootstrap';
 import { ButtonsModule } from 'ng2-bootstrap';
 
+import { AppRoutingModule } from './app-routing.module';
 import { AppComponent }  from './app.component';
 import { AllNotecardsComponent } from './all-notecards.component';
+import { PlayersComponent } from './players.component';
 import { PlayersService } from './players.service';
 import { ItemsService } from './items.service';
 
@@ -15,11 +17,13 @@ import { ItemsService } from './items.service';
     BrowserModule,
     FormsModule,
     DropdownModule.forRoot(),
-    ButtonsModule.forRoot()
+    ButtonsModule.forRoot(),
+    AppRoutingModule
   ],
   declarations: [
     AppComponent,
-    AllNotecardsComponent
+    AllNotecardsComponent,
+    PlayersComponent
   ],
   providers: [
     PlayersService,

@@ -20,7 +20,8 @@ describe('AllNotecards Component tests', () => {
 
   beforeEach(async(() => {
     let playersServiceStub = {
-      getPlayers: () => {return ["Shenoa", "Glen", "Cindy"];}
+      getPlayers: () => {return ["ME", "Shenoa", "Glen", "Cindy"];},
+      addPlayers: () => {}
     };
 
     let itemsServiceStub = {
@@ -208,7 +209,7 @@ describe('AllNotecards Component tests', () => {
     comp.guessInformation.selectWeapon("Wrench");
     comp.guessInformation.selectRoom("Kitchen");
     comp.learnOpponentHasSomething();
-    
+
     fixture.detectChanges();
     expect(getTextContent("#currentPlayer")).toContain("Shenoa");
   });

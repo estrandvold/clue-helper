@@ -35,14 +35,15 @@ export class AllNotecardsComponent implements OnInit {
   }
 
   createNotecardBrain(): NotecardBrain {
-    let notecards = [new Notecard("ME", this.itemsService.getItems(Notecard.NO), true)];
+    let notecards: Notecard[] = [];
     let players = this.playersService.getPlayers();
-    for(var index in players) {
+
+    for(let i = 0; i < players.length; i++) {
+      let status = (i === 0) ? Notecard.NO : Notecard.UNKNOWN;
+      let change = (i === 0) ? true : false;
+
       notecards.push(
-        new Notecard(
-          players[index],
-          this.itemsService.getItems(Notecard.UNKNOWN), false)
-        );
+        new Notecard(players[i], this.itemsService.getItems(status), change));
     }
 
     return new NotecardBrain(notecards, 0);

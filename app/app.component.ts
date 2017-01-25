@@ -3,6 +3,6 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'my-app',
   template: `
-    <all-notecards></all-notecards>`,
+    <router-outlet></router-outlet>`,
 })
 export class AppComponent  { }

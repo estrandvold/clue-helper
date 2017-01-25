@@ -7,7 +7,13 @@ describe('PlayersService', () => {
     playersService = new PlayersService();
   });
 
-  it('should return a static list of players', () => {
-    expect(playersService.getPlayers()).toEqual(["Shenoa", "Glen", "Cindy", "Diane", "Chester"]);
+  it('should keep a list of players', () => {
+    expect(playersService.getPlayers()).toEqual([]);
+
+    playersService.addPlayer("Shenoa");
+    expect(playersService.getPlayers()).toEqual(["Shenoa"]);
+
+    playersService.addPlayers(["Glen", "Cindy"]);
+    expect(playersService.getPlayers()).toEqual(["Shenoa", "Glen", "Cindy"]);
   });
 });
