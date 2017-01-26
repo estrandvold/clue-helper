@@ -44,7 +44,7 @@
                 Suspect <span class="caret"></span>
               </button>
               <ul dropdownMenu role="menu" aria-labelledby="single-button">
-                <li *ngFor="let suspect of guessInformation.suspects" (click)="guessInformation.selectSuspect(suspect)" role="menuitem"><a class="dropdown-item" href="#">{{suspect}}</a></li>
+                <li *ngFor="let suspect of guessInformation.suspects" (click)="guessInformation.selectSuspect(suspect)" role="menuitem"><a class="dropdown-item" role="button">{{suspect}}</a></li>
               </ul>
             </div>
             {{guessInformation.selectedSuspect}}
@@ -57,7 +57,7 @@
                 Weapon <span class="caret"></span>
               </button>
               <ul dropdownMenu role="menu" aria-labelledby="single-button">
-                <li *ngFor="let weapon of guessInformation.weapons" (click)="guessInformation.selectWeapon(weapon)" role="menuitem"><a class="dropdown-item" href="#">{{weapon}}</a></li>
+                <li *ngFor="let weapon of guessInformation.weapons" (click)="guessInformation.selectWeapon(weapon)" role="menuitem"><a class="dropdown-item" role="button">{{weapon}}</a></li>
               </ul>
             </div>
             {{guessInformation.selectedWeapon}}
@@ -70,7 +70,7 @@
                 Room <span class="caret"></span>
               </button>
               <ul dropdownMenu role="menu" aria-labelledby="single-button">
-                <li *ngFor="let room of guessInformation.rooms" (click)="guessInformation.selectRoom(room)" role="menuitem"><a class="dropdown-item" href="#">{{room}}</a></li>
+                <li *ngFor="let room of guessInformation.rooms" (click)="guessInformation.selectRoom(room)" role="menuitem"><a class="dropdown-item" role="button">{{room}}</a></li>
               </ul>
             </div>
             {{guessInformation.selectedRoom}}
