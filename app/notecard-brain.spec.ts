@@ -119,6 +119,14 @@ describe('NotecardBrain class tests', () => {
     expect(notecardBrain.itemFound(1)).toBe(true);
   });
 
+  it('should report if no player has an item', () => {
+    expect(notecardBrain.noPlayerHasItem(0)).toBe(false);
+    for(let i = 0; i < notecards.length; i++) {
+      notecards[i].items[0].status = Notecard.NO;
+    }
+    expect(notecardBrain.noPlayerHasItem(0)).toBe(true);
+  });
+
   function createGuessInformation(suspect: string, weapon: string, room: string): GuessInformation {
     let guessInformation: GuessInformation = new GuessInformation([], [], []);
     guessInformation.selectSuspect(suspect);

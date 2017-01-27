@@ -73,6 +73,16 @@ export class NotecardBrain {
     return false;
   }
 
+  noPlayerHasItem(index: number): boolean {
+    for(let i = 0; i < this.notecards.length; i++) {
+      if(this.notecards[i].items[index].status !== Notecard.NO) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
   opponentHasNone(guessInformation: GuessInformation): void {
     this.markNo(this.revealPlayer, guessInformation.selectedSuspect);
     this.markNo(this.revealPlayer, guessInformation.selectedWeapon);

@@ -9,7 +9,9 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let item of items; let i = index" [ngClass]="{'success': notecardBrain.itemFound(i)}">
+          <tr *ngFor="let item of items; let i = index"
+              [ngClass]="{'danger': notecardBrain.itemFound(i),
+                          'success': notecardBrain.noPlayerHasItem(i)}">
             <th scope="row">{{item.name}}</th>
             <td id="status{{j}}-{{i}}" *ngFor="let notecard of notecardBrain.getNotecards(); let j = index"
                 (click) = "toggleStatus(notecard, i)">
