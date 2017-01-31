@@ -14,6 +14,7 @@ import { ItemsService } from './items.service';
 })
 export class AllNotecardsComponent implements OnInit {
   items: Item[];
+  playerNames: string[];
   notecardBrain: NotecardBrain;
   guessInformation: GuessInformation;
   guessing: boolean;
@@ -31,6 +32,7 @@ export class AllNotecardsComponent implements OnInit {
       this.itemsService.getRooms()
     );
     this.notecardBrain = this.createNotecardBrain();
+    this.playerNames = this.notecardBrain.getPlayerNames();
     this.guessing = false;
   }
 

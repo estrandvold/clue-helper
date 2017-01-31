@@ -70,6 +70,14 @@ describe('AllNotecards Component tests', () => {
     expect(notecards[3].name).toEqual("Cindy");
   });
 
+  it('should have a list of player names', () => {
+    fixture.detectChanges();
+    let playerNames = comp.playerNames;
+    expect(playerNames.length).toBe(4);
+    expect(playerNames[0]).toBe("ME");
+    expect(playerNames[3]).toBe("Cindy");
+  });
+
   it('should default my notecard to NO', () => {
     fixture.detectChanges();
     let items = comp.notecardBrain.getNotecards()[0].items;

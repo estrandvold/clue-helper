@@ -18,6 +18,16 @@ export class NotecardBrain {
     return this.notecards;
   }
 
+  getPlayerNames(): string[] {
+    let names: string[] = [];
+
+    for(var i = 0; i < this.notecards.length; i++) {
+      names.push(this.notecards[i].name);
+    }
+
+    return names;
+  }
+
   getActivePlayer(): string {
     return this.notecards[this.activePlayer].name;
   }

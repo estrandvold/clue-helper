@@ -37,6 +37,13 @@ describe('NotecardBrain class tests', () => {
     expect(notecardBrain.getRevealPlayer()).toBe("Player1");
   });
 
+  it('should be able to get a list of names', () => {
+    let names: string[] = notecardBrain.getPlayerNames();
+    expect(names.length).toBe(3);
+    expect(names[0]).toBe("Player0");
+    expect(names[2]).toBe("Player2");
+  });
+
   it('should be able to go to the next player', () => {
     notecardBrain.nextPlayer();
     expect(notecardBrain.getActivePlayer()).toBe("Player1");
