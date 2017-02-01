@@ -1,8 +1,14 @@
 import { Notecard } from './notecard';
+import { Item } from './item';
 import { GuessInformation } from './guess-information'
 
 export class NotecardBrain {
+  public static readonly UNKNOWN = "UNKNOWN";
+  public static readonly ALL_NO = "ALL_NO";
+  public static readonly ONE_YES = "ONE_YES";
+
   private notecards: Notecard[];
+  private items: any;
   private playerIndex: number;
   private activePlayer: number;
   private revealPlayer: number;
@@ -12,10 +18,15 @@ export class NotecardBrain {
     this.playerIndex = playerIndex;
     this.activePlayer = 0;
     this.revealPlayer = 1;
+    this.items = this.buildItemStatus(notecards[0].items);
   }
 
   getNotecards(): Notecard[] {
     return this.notecards;
+  }
+
+  getItemStatus(item: string): string {
+    return this.items[item].status;
   }
 
   getPlayerNames(): string[] {
@@ -50,47 +61,30 @@ export class NotecardBrain {
     this.revealPlayer = this.increment(this.activePlayer, this.notecards.length - 1);
   }
 
+  /**
+   * @todo This whole function is destined for the garbage bin as soon as player
+   * items are selected on a different screen and toggling is disabled.
+   */
   updatePlayerCard(i: number): void {
     let playerNotecard = this.notecards[this.playerIndex];
     let status = playerNotecard.items[i].status;
+    let itemName = playerNotecard.items[i].name;
 
     // Toggle the player card
     if(status === Notecard.NO) {
-      playerNotecard.items[i].status = Notecard.YES;
+      this.markYes(this.playerIndex, itemName);
     } else {
-      playerNotecard.items[i].status = Notecard.NO;
-    }
-
-    // Set all the opponent's status to UNKNOWN if the player status is NO
-    // Set all the opponent's status to NO if the player status is YES
-    let opponentStatus = (status === Notecard.NO) ? Notecard.NO : Notecard.UNKNOWN;
-    for(var notecardIndex = 0; notecardIndex < this.notecards.length; notecardIndex++) {
-      // Don't update the player's card
-      if(notecardIndex === this.playerIndex) { continue; }
-
-      // Update an opponent's card
-      this.notecards[notecardIndex].items[i].status = opponentStatus;
-    }
-  }
-
-  itemFound(index: number): boolean {
-    for(let i = 0; i < this.notecards.length; i++) {
-      if(this.notecards[i].items[index].status === Notecard.YES) {
-        return true;
+      // Because main player status can be toggled, we need to make sure opponent
+      // status is changed back to UNKNOWN when appropriate
+      for(let notecardIndex = 0; notecardIndex < this.notecards.length; notecardIndex++) {
+        if(notecardIndex === this.playerIndex) { continue; }
+        this.notecards[notecardIndex].items[i].status = Notecard.UNKNOWN;
       }
+      this.items[itemName].status = NotecardBrain.UNKNOWN;
+
+      this.markNo(this.playerIndex, itemName);
     }
 
-    return false;
-  }
-
-  noPlayerHasItem(index: number): boolean {
-    for(let i = 0; i < this.notecards.length; i++) {
-      if(this.notecards[i].items[index].status !== Notecard.NO) {
-        return false;
-      }
-    }
-
-    return true;
   }
 
   opponentHasNone(guessInformation: GuessInformation): void {
@@ -100,16 +94,10 @@ export class NotecardBrain {
   }
 
   opponentHasItem(item: string, opponentIndex?: number): void {
+    // If an opponent isn't received, assume it is the player revealing cards
     if(!opponentIndex) {opponentIndex = this.revealPlayer;}
 
-    var that = this;
-    this.notecards.forEach(function(notecard, index) {
-      if(index === opponentIndex) {
-        notecard.mark(item, Notecard.YES);
-      } else {
-        that.markNo(index, item);
-      }
-    });
+    this.markYes(opponentIndex, item);
   }
 
   opponentHasOr(guessInformation: GuessInformation): void {
@@ -125,12 +113,86 @@ export class NotecardBrain {
     }
   }
 
+  private buildItemStatus(items: Item[]): any {
+    let itemStatus = {};
+    for(let i = 0; i < items.length; i++) {
+      itemStatus[items[i].name] = {status: NotecardBrain.UNKNOWN, type: items[i].type};
+    }
+
+    return itemStatus;
+  }
+
   private markNo(index: number, item: string): void {
     this.notecards[index].mark(item, Notecard.NO);
+
+    if(this.noPlayerHasItem(item)) {
+      this.items[item].status = NotecardBrain.ALL_NO;
+    }
+
     let items = this.notecards[index].checkOrItems(item);
     for(let i = 0; i < items.length; i++) {
       this.opponentHasItem(items[i], index);
     }
+  }
+
+  private markYes(index: number, item: string): void {
+    this.items[item].status = NotecardBrain.ONE_YES;
+
+    for(let i = 0; i < this.notecards.length; i++) {
+      if(i === index) {
+        this.notecards[i].mark(item, Notecard.YES);
+      } else {
+        this.notecards[i].mark(item, Notecard.NO);
+      }
+    }
+
+    // Check to see if there is only one item of a type that is not marked YES.
+    // If so, that means nobody has the remaining item and it must be in the
+    // middle of the board
+    let singleName = this.getNameOfSingleRemainingType(this.items[item].type);
+    if(singleName != null) {
+      for(let j = 0; j < this.notecards.length; j++) {
+        this.markNo(j, singleName);
+      }
+    }
+  }
+
+  private getNameOfSingleRemainingType(type: string): string {
+    let count = 0;
+    let name: string;
+    for(let item in this.items) {
+      if(this.items[item].type === type && this.items[item].status !== NotecardBrain.ONE_YES) {
+        count++;
+        name = item;
+      }
+    }
+
+    if(count !== 1) {
+      name = null;
+    }
+
+    return name;
+  }
+
+  private noPlayerHasItem(item: string): boolean {
+    // Get index from item name
+    let index = -1;
+    let items = this.notecards[0].items;
+    for(let i = 0; i < items.length; i++) {
+      if(items[i].name === item) {
+        index = i;
+        break;
+      }
+    }
+
+    // Look through notecards and check if any player has or might have the item
+    for(let i = 0; i < this.notecards.length; i++) {
+      if(this.notecards[i].items[index].status !== Notecard.NO) {
+        return false;
+      }
+    }
+
+    return true;
   }
 
   private increment(num: number, max: number): number {

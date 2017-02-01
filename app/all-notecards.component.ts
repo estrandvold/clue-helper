@@ -81,4 +81,16 @@ export class AllNotecardsComponent implements OnInit {
     this.notecardBrain.opponentHasOr(this.guessInformation);
     this.nextPlayer();
   }
+
+  getRowStyle(item: string): string {
+    let status = this.notecardBrain.getItemStatus(item);
+
+    if(status === NotecardBrain.ALL_NO) {
+      return "success";
+    } else if (status === NotecardBrain.ONE_YES) {
+      return "danger";
+    } else {
+      return "";
+    }
+  }
 }

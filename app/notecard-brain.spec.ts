@@ -10,19 +10,19 @@ describe('NotecardBrain class tests', () => {
   let playerIndex = 0;
 
   beforeEach(() => {
-    let type = "TYPE";
     notecards = [];
 
     for(let i = 0; i < 3; i++) {
       let status = (i === playerIndex) ? Notecard.NO : Notecard.UNKNOWN;
       let canToggle = (i === playerIndex) ? true : false;
       let items: Item[] = [];
-      items.push(new Item("Miss Scarlet", status, type));
-      items.push(new Item("Professor Plum", status, type));
-      items.push(new Item("Candlestick", status, type));
-      items.push(new Item("Knife", status, type));
-      items.push(new Item("Kitchen", status, type));
-      items.push(new Item("Ballroom", status, type));
+      items.push(new Item("Miss Scarlet", status, "SUSPECT"));
+      items.push(new Item("Professor Plum", status, "SUSPECT"));
+      items.push(new Item("Candlestick", status, "WEAPON"));
+      items.push(new Item("Knife", status, "WEAPON"));
+      items.push(new Item("Kitchen", status, "ROOM"));
+      items.push(new Item("Ballroom", status, "ROOM"));
+      items.push(new Item("Mr. Green", status, "SUSPECT"));
 
       let notecard: Notecard = new Notecard("Player" + i, items, canToggle);
       notecards.push(notecard);
@@ -42,6 +42,10 @@ describe('NotecardBrain class tests', () => {
     expect(names.length).toBe(3);
     expect(names[0]).toBe("Player0");
     expect(names[2]).toBe("Player2");
+  });
+
+  it('should track the status of items', () => {
+    expect(notecardBrain.getItemStatus("Knife")).toEqual(NotecardBrain.UNKNOWN);
   });
 
   it('should be able to go to the next player', () => {
@@ -116,24 +120,6 @@ describe('NotecardBrain class tests', () => {
     }
   });
 
-  it('should report if an item has been found by any player', () => {
-    expect(notecardBrain.itemFound(0)).toBe(false);
-    notecardBrain.getNotecards()[0].items[0].status = Notecard.YES;
-    expect(notecardBrain.itemFound(0)).toBe(true);
-
-    expect(notecardBrain.itemFound(1)).toBe(false);
-    notecardBrain.getNotecards()[1].items[1].status = Notecard.YES;
-    expect(notecardBrain.itemFound(1)).toBe(true);
-  });
-
-  it('should report if no player has an item', () => {
-    expect(notecardBrain.noPlayerHasItem(0)).toBe(false);
-    for(let i = 0; i < notecards.length; i++) {
-      notecards[i].items[0].status = Notecard.NO;
-    }
-    expect(notecardBrain.noPlayerHasItem(0)).toBe(true);
-  });
-
   function createGuessInformation(suspect: string, weapon: string, room: string): GuessInformation {
     let guessInformation: GuessInformation = new GuessInformation([], [], []);
     guessInformation.selectSuspect(suspect);
@@ -153,8 +139,23 @@ describe('NotecardBrain class tests', () => {
     expect(notecards[1].items[4].status).toBe(Notecard.NO);
   });
 
+  it('should report when no opponents have an item', () => {
+    expect(notecardBrain.getItemStatus("Miss Scarlet")).toBe(NotecardBrain.UNKNOWN);
+    for(let i = 0; i < notecards.length - 2; i++) {
+      notecardBrain.opponentHasNone(createGuessInformation("Miss Scarlet", "Candlestick", "Kitchen"));
+      notecardBrain.nextRevealPlayer();
+      expect(notecardBrain.getItemStatus("Miss Scarlet")).toBe(NotecardBrain.UNKNOWN);
+    }
+
+    notecardBrain.opponentHasNone(createGuessInformation("Miss Scarlet", "Candlestick", "Kitchen"));
+    notecardBrain.nextRevealPlayer();
+    expect(notecardBrain.getItemStatus("Miss Scarlet")).toBe(NotecardBrain.ALL_NO);
+  });
+
   it('should mark when an opponent has a specific item', () => {
+    expect(notecardBrain.getItemStatus("Miss Scarlet")).toBe(NotecardBrain.UNKNOWN);
     notecardBrain.opponentHasItem("Miss Scarlet");
+    expect(notecardBrain.getItemStatus("Miss Scarlet")).toBe(NotecardBrain.ONE_YES);
     for(var i = 0; i < notecards.length; i++) {
       if(i === 1) {
         expect(notecards[i].items[0].status).toBe(Notecard.YES);
@@ -162,6 +163,16 @@ describe('NotecardBrain class tests', () => {
         expect(notecards[i].items[0].status).toBe(Notecard.NO);
       }
     }
+  });
+
+  it('should notice when there is only one item remaining in a type', () => {
+    expect(notecards[1].items[6].status).toBe(Notecard.UNKNOWN);
+
+    notecardBrain.opponentHasItem("Miss Scarlet");
+    expect(notecards[1].items[6].status).toBe(Notecard.UNKNOWN);
+
+    notecardBrain.opponentHasItem("Professor Plum");
+    expect(notecards[1].items[6].status).toBe(Notecard.NO);
   });
 
   it('should allow specifying the opponent with the item', () => {

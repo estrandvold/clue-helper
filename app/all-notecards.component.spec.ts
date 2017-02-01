@@ -221,4 +221,22 @@ describe('AllNotecards Component tests', () => {
     fixture.detectChanges();
     expect(getTextContent("#currentPlayer")).toContain("Shenoa");
   });
+
+  it('should calculate row styles when an item is found', () => {
+    fixture.detectChanges();
+    let spy = spyOn(comp.notecardBrain, "getItemStatus").and.returnValue(NotecardBrain.ONE_YES);
+    expect(comp.getRowStyle("item")).toBe("danger");
+  });
+
+  it('should calculate row styles when an item is unknown', () => {
+    fixture.detectChanges();
+    let spy = spyOn(comp.notecardBrain, "getItemStatus").and.returnValue(NotecardBrain.UNKNOWN);
+    expect(comp.getRowStyle("item")).toBe("");
+  });
+
+  it('should calculate row styles when an item is missing from all players', () => {
+    fixture.detectChanges();
+    let spy = spyOn(comp.notecardBrain, "getItemStatus").and.returnValue(NotecardBrain.ALL_NO);
+    expect(comp.getRowStyle("item")).toBe("success");
+  });
 });
