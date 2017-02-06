@@ -168,11 +168,14 @@ describe('NotecardBrain class tests', () => {
   it('should notice when there is only one item remaining in a type', () => {
     expect(notecards[1].items[6].status).toBe(Notecard.UNKNOWN);
 
-    notecardBrain.opponentHasItem("Miss Scarlet");
+    let results: string[] = notecardBrain.opponentHasItem("Miss Scarlet");
     expect(notecards[1].items[6].status).toBe(Notecard.UNKNOWN);
+    expect(results.length).toBe(0);
 
-    notecardBrain.opponentHasItem("Professor Plum");
+    results = notecardBrain.opponentHasItem("Professor Plum");
     expect(notecards[1].items[6].status).toBe(Notecard.NO);
+    expect(results.length).toBe(1);
+    expect(results[0]).toBe("Mr. Green is in the middle!");
   });
 
   it('should allow specifying the opponent with the item', () => {
@@ -182,16 +185,20 @@ describe('NotecardBrain class tests', () => {
 
   it('should keep track of opponent ORs', () => {
     // An OR that is created when all three guesses are UNKNOWN shouldn't change anything
-    notecardBrain.opponentHasOr(createGuessInformation("Miss Scarlet", "Candlestick", "Kitchen"));
+    let results: string[] =
+      notecardBrain.opponentHasOr(createGuessInformation("Miss Scarlet", "Candlestick", "Kitchen"));
     expect(notecards[1].items[0].status).toBe(Notecard.UNKNOWN);
     expect(notecards[1].items[2].status).toBe(Notecard.UNKNOWN);
     expect(notecards[1].items[4].status).toBe(Notecard.UNKNOWN);
+    expect(results.length).toBe(0);
 
     // An OR that is created when 2 of the 3 guesses are known to be NO should
     // infer that the unknown guess must be YES
     notecardBrain.opponentHasNone(createGuessInformation("Professor Plum", "Knife", "Kitchen"));
-    notecardBrain.opponentHasOr(createGuessInformation("Professor Plum", "Knife", "Ballroom"));
+    results = notecardBrain.opponentHasOr(createGuessInformation("Professor Plum", "Knife", "Ballroom"));
     expect(notecards[1].items[5].status).toBe(Notecard.YES);
+    expect(results.length).toBe(2);
+    expect(results).toEqual(["Player1 has Ballroom", "Kitchen is in the middle!"]);
   });
 
   it('should resolve ORs when NOs are marked', () => {
@@ -203,8 +210,26 @@ describe('NotecardBrain class tests', () => {
 
     // After learning that two items in the OR are NO, the other can be inferred
     // to be YES
-    notecardBrain.opponentHasNone(createGuessInformation("Miss Scarlet", "Candlestick", "Ballroom"));
+    let results = notecardBrain.opponentHasNone(createGuessInformation("Miss Scarlet", "Candlestick", "Ballroom"));
     expect(notecards[1].items[4].status).toBe(Notecard.YES);
+    expect(results.length).toBe(2);
+    expect(results).toEqual(["Player1 has Kitchen", "Ballroom is in the middle!"]);
+  });
+
+  it('should resolve ORs when YESs are marked', () => {
+    let results: string[] = [];
+    notecardBrain.opponentHasOr(createGuessInformation("Miss Scarlet", "Candlestick", "Kitchen"));
+    notecardBrain.nextRevealPlayer();
+    notecardBrain.opponentHasOr(createGuessInformation("Mr. Green", "Candlestick", "Kitchen"));
+
+    results = notecardBrain.opponentHasItem("Miss Scarlet", 0);
+    expect(results.length).toBe(0);
+
+    results = notecardBrain.opponentHasItem("Candlestick", 0);
+    expect(results.length).toBe(5);
+    expect(results).toEqual(["Player1 has Kitchen", "Ballroom is in the middle!",
+                             "Player2 has Mr. Green", "Professor Plum is in the middle!",
+                             "Knife is in the middle!"]);
   });
 
 });

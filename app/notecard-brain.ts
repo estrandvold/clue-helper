@@ -87,20 +87,23 @@ export class NotecardBrain {
 
   }
 
-  opponentHasNone(guessInformation: GuessInformation): void {
-    this.markNo(this.revealPlayer, guessInformation.selectedSuspect);
-    this.markNo(this.revealPlayer, guessInformation.selectedWeapon);
-    this.markNo(this.revealPlayer, guessInformation.selectedRoom);
+  opponentHasNone(guessInformation: GuessInformation): string[] {
+    let results: string[] = [];
+    results.push(...this.markNo(this.revealPlayer, guessInformation.selectedSuspect));
+    results.push(...this.markNo(this.revealPlayer, guessInformation.selectedWeapon));
+    results.push(...this.markNo(this.revealPlayer, guessInformation.selectedRoom));
+    return results;
   }
 
-  opponentHasItem(item: string, opponentIndex?: number): void {
+  opponentHasItem(item: string, opponentIndex?: number): string[] {
     // If an opponent isn't received, assume it is the player revealing cards
-    if(!opponentIndex) {opponentIndex = this.revealPlayer;}
+    if(opponentIndex === undefined) {opponentIndex = this.revealPlayer;}
 
-    this.markYes(opponentIndex, item);
+    return this.markYes(opponentIndex, item);
   }
 
-  opponentHasOr(guessInformation: GuessInformation): void {
+  opponentHasOr(guessInformation: GuessInformation): string[] {
+    let results: string[] = [];
     let item = this.notecards[this.revealPlayer].addOrItems([
       guessInformation.selectedSuspect,
       guessInformation.selectedWeapon,
@@ -109,8 +112,11 @@ export class NotecardBrain {
 
     if(item) {
       // We can deduce they have an item!
-      this.opponentHasItem(item);
+      results.push(this.notecards[this.revealPlayer].name + " has " + item,
+                                  ...this.opponentHasItem(item));
     }
+
+    return results;
   }
 
   private buildItemStatus(items: Item[]): any {
@@ -122,27 +128,32 @@ export class NotecardBrain {
     return itemStatus;
   }
 
-  private markNo(index: number, item: string): void {
+  private markNo(index: number, item: string): string[] {
     this.notecards[index].mark(item, Notecard.NO);
 
     if(this.noPlayerHasItem(item)) {
       this.items[item].status = NotecardBrain.ALL_NO;
     }
 
+    let results: string[] = [];
     let items = this.notecards[index].checkOrItems(item);
     for(let i = 0; i < items.length; i++) {
-      this.opponentHasItem(items[i], index);
+      results.push(this.notecards[index].name + " has " + items[i]);
+      results.push(...this.opponentHasItem(items[i], index));
     }
+
+    return results;
   }
 
-  private markYes(index: number, item: string): void {
+  private markYes(index: number, item: string): string[] {
     this.items[item].status = NotecardBrain.ONE_YES;
+    let results: string[] = [];
 
     for(let i = 0; i < this.notecards.length; i++) {
       if(i === index) {
         this.notecards[i].mark(item, Notecard.YES);
       } else {
-        this.notecards[i].mark(item, Notecard.NO);
+        results.push(...this.markNo(i, item));
       }
     }
 
@@ -154,7 +165,10 @@ export class NotecardBrain {
       for(let j = 0; j < this.notecards.length; j++) {
         this.markNo(j, singleName);
       }
+      results.push(singleName + " is in the middle!");
     }
+
+    return results;
   }
 
   private getNameOfSingleRemainingType(type: string): string {

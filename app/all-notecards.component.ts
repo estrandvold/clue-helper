@@ -18,6 +18,7 @@ export class AllNotecardsComponent implements OnInit {
   notecardBrain: NotecardBrain;
   guessInformation: GuessInformation;
   guessing: boolean;
+  announcements: string[];
 
   constructor(
     private playersService: PlayersService,
@@ -34,6 +35,7 @@ export class AllNotecardsComponent implements OnInit {
     this.notecardBrain = this.createNotecardBrain();
     this.playerNames = this.notecardBrain.getPlayerNames();
     this.guessing = false;
+    this.announcements = [];
   }
 
   createNotecardBrain(): NotecardBrain {
@@ -68,17 +70,17 @@ export class AllNotecardsComponent implements OnInit {
   }
 
   learnOpponentHasNone(): void {
-    this.notecardBrain.opponentHasNone(this.guessInformation);
+    this.announcements.unshift(...this.notecardBrain.opponentHasNone(this.guessInformation));
     this.notecardBrain.nextRevealPlayer();
   }
 
   learnOpponentHasItem(item: string): void {
-    this.notecardBrain.opponentHasItem(item);
+    this.announcements.unshift(...this.notecardBrain.opponentHasItem(item));
     this.nextPlayer();
   }
 
   learnOpponentHasSomething(): void {
-    this.notecardBrain.opponentHasOr(this.guessInformation);
+    this.announcements.unshift(...this.notecardBrain.opponentHasOr(this.guessInformation));
     this.nextPlayer();
   }
 
