@@ -5,9 +5,9 @@ import { Item } from './item';
 @Injectable()
 export class ItemsService {
 
-  private static readonly SUSPECT = "SUSPECT";
-  private static readonly WEAPON = "WEAPON";
-  private static readonly ROOM = "ROOM";
+  public static readonly SUSPECT = "SUSPECT";
+  public static readonly WEAPON = "WEAPON";
+  public static readonly ROOM = "ROOM";
 
   private suspects = [
     "Miss Scarlet",

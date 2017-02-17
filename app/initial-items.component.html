@@ -1,0 +1,30 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-6 col-md-offset-3">
+      <h1 class="text-center">Select Your Initial Items</h1>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-2 col-md-offset-3">
+      <div class="small-margin btn-group-vertical">
+        <label *ngFor="let suspect of suspects" class="btn btn-primary" btnCheckbox (click)="toggleItem(suspect)">
+          {{suspect.name}}
+        </label>
+      </div>
+    </div>
+    <div class="col-md-2">
+      <div class="small-margin btn-group-vertical">
+        <label *ngFor="let weapon of weapons" class="btn btn-primary" btnCheckbox>
+          {{weapon.name}}
+        </label>
+      </div>
+    </div>
+    <div class="col-md-2">
+      <div class="small-margin btn-group-vertical">
+        <label *ngFor="let room of rooms" class="btn btn-primary" btnCheckbox>
+          {{room.name}}
+        </label>
+      </div>
+    </div>
+  </div>
+</div>

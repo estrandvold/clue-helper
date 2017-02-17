@@ -9,6 +9,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent }  from './app.component';
 import { AllNotecardsComponent } from './all-notecards.component';
 import { PlayersComponent } from './players.component';
+import { InitialItemsComponent} from './initial-items.component';
 import { PlayersService } from './players.service';
 import { ItemsService } from './items.service';
 
@@ -23,7 +24,8 @@ import { ItemsService } from './items.service';
   declarations: [
     AppComponent,
     AllNotecardsComponent,
-    PlayersComponent
+    PlayersComponent,
+    InitialItemsComponent
   ],
   providers: [
     PlayersService,
