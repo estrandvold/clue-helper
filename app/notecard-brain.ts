@@ -61,32 +61,6 @@ export class NotecardBrain {
     this.revealPlayer = this.increment(this.activePlayer, this.notecards.length - 1);
   }
 
-  /**
-   * @todo This whole function is destined for the garbage bin as soon as player
-   * items are selected on a different screen and toggling is disabled.
-   */
-  updatePlayerCard(i: number): void {
-    let playerNotecard = this.notecards[this.playerIndex];
-    let status = playerNotecard.items[i].status;
-    let itemName = playerNotecard.items[i].name;
-
-    // Toggle the player card
-    if(status === Notecard.NO) {
-      this.markYes(this.playerIndex, itemName);
-    } else {
-      // Because main player status can be toggled, we need to make sure opponent
-      // status is changed back to UNKNOWN when appropriate
-      for(let notecardIndex = 0; notecardIndex < this.notecards.length; notecardIndex++) {
-        if(notecardIndex === this.playerIndex) { continue; }
-        this.notecards[notecardIndex].items[i].status = Notecard.UNKNOWN;
-      }
-      this.items[itemName].status = NotecardBrain.UNKNOWN;
-
-      this.markNo(this.playerIndex, itemName);
-    }
-
-  }
-
   opponentHasNone(guessInformation: GuessInformation): string[] {
     let results: string[] = [];
     results.push(...this.markNo(this.revealPlayer, guessInformation.selectedSuspect));

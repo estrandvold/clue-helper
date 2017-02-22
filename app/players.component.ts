@@ -20,9 +20,12 @@ export class PlayersComponent implements OnInit {
 
   ngOnInit(): void {
     this.players = [];
+    // this.players = [{value: "Eric"}, {value: "Shenoa"}, {value: "Charlie"}];
     for(let i = 0; i < 6; i++) {
       this.players.push({value: ""});
     }
+
+    // this.goToGame();
   }
 
   private buildPlayerArray(): string[] {
@@ -46,7 +49,7 @@ export class PlayersComponent implements OnInit {
 
   goToGame(): void {
     this.playersService.addPlayers(this.buildPlayerArray());
-    this.router.navigate(['game']);
+    this.router.navigate(['items']);
   }
 
   playersValid(): boolean {

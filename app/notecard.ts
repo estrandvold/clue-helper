@@ -2,7 +2,6 @@ import { Item } from './item';
 
 export class Notecard {
   public name: string;
-  public canToggle: boolean;
   public items: Item[] = [];
   private ors: string[][] = [];
 
@@ -10,10 +9,9 @@ export class Notecard {
   public static readonly NO = "NO";
   public static readonly UNKNOWN = "UNKNOWN";
 
-  public constructor(name: string, items: Item[], canToggle: boolean) {
+  public constructor(name: string, items: Item[]) {
     this.name = name;
     this.items = items;
-    this.canToggle = canToggle;
   }
 
   public mark(name: string, status: string) {

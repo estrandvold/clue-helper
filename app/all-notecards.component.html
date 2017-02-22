@@ -11,8 +11,7 @@
         <tbody>
           <tr *ngFor="let item of items; let i = index" [ngClass]="getRowStyle(item.name)">
             <th scope="row">{{item.name}}</th>
-            <td id="status{{j}}-{{i}}" *ngFor="let notecard of notecardBrain.getNotecards(); let j = index"
-                (click) = "toggleStatus(notecard, i)">
+            <td id="status{{j}}-{{i}}" *ngFor="let notecard of notecardBrain.getNotecards(); let j = index">
               {{notecard.items[i].status}}
             </td>
           </tr>

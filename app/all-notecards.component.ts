@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 
 import { Notecard } from './notecard';
 import { Item } from './item';
@@ -21,70 +22,61 @@ export class AllNotecardsComponent implements OnInit {
   announcements: string[];
 
   constructor(
+    private route: ActivatedRoute,
     private playersService: PlayersService,
     private itemsService: ItemsService
   ) { }
 
   ngOnInit(): void {
+    const PLAYER_INDEX = 0;
+
     this.items = this.itemsService.getItems();
     this.guessInformation = new GuessInformation(
       this.itemsService.getSuspects(),
       this.itemsService.getWeapons(),
       this.itemsService.getRooms()
     );
-    this.notecardBrain = this.createNotecardBrain();
+    this.notecardBrain = this.createNotecardBrain(PLAYER_INDEX);
     this.playerNames = this.notecardBrain.getPlayerNames();
+    this.markItems(this.route.snapshot.params['items'].split("|"), PLAYER_INDEX);
     this.guessing = false;
     this.announcements = [];
   }
 
-  createNotecardBrain(): NotecardBrain {
-    let notecards: Notecard[] = [];
-    let players = this.playersService.getPlayers();
-
-    for(let i = 0; i < players.length; i++) {
-      let status = (i === 0) ? Notecard.NO : Notecard.UNKNOWN;
-      let change = (i === 0) ? true : false;
-
-      notecards.push(
-        new Notecard(players[i], this.itemsService.getItems(status), change));
-    }
-
-    return new NotecardBrain(notecards, 0);
-  }
-
-  toggleGuessing(): void {
+  public toggleGuessing(): void {
     this.guessing = (this.guessing) ? false : true;
   }
 
-  toggleStatus(notecard: Notecard, i: number): void {
-    if(notecard.canToggle) {
-      this.notecardBrain.updatePlayerCard(i);
-    }
-  }
-
-  nextPlayer(): void {
+  public nextPlayer(): void {
     this.guessInformation.clearSelected();
     this.guessing = false;
     this.notecardBrain.nextPlayer();
   }
 
-  learnOpponentHasNone(): void {
+  public markItems(items: string[], playerIndex: number): void {
+    for(let i = 0; i < items.length; i++) {
+      if(items[i]) {
+        this.notecardBrain.opponentHasItem(items[i], playerIndex);
+      }
+    }
+  }
+
+  public learnOpponentHasNone(): void {
     this.announcements.unshift(...this.notecardBrain.opponentHasNone(this.guessInformation));
     this.notecardBrain.nextRevealPlayer();
   }
 
-  learnOpponentHasItem(item: string): void {
+  public learnOpponentHasItem(item: string): void {
     this.announcements.unshift(...this.notecardBrain.opponentHasItem(item));
     this.nextPlayer();
   }
 
-  learnOpponentHasSomething(): void {
+  public learnOpponentHasSomething(): void {
     this.announcements.unshift(...this.notecardBrain.opponentHasOr(this.guessInformation));
     this.nextPlayer();
   }
 
-  getRowStyle(item: string): string {
+  public getRowStyle(item: string): string {
     let status = this.notecardBrain.getItemStatus(item);
 
     if(status === NotecardBrain.ALL_NO) {
@@ -94,5 +86,18 @@ export class AllNotecardsComponent implements OnInit {
     } else {
       return "";
     }
+  }
+
+  private createNotecardBrain(playerIndex: number): NotecardBrain {
+    let notecards: Notecard[] = [];
+    let players = this.playersService.getPlayers();
+
+    for(let i = 0; i < players.length; i++) {
+      let status = (i === playerIndex) ? Notecard.NO : Notecard.UNKNOWN;
+
+      notecards.push(new Notecard(players[i], this.itemsService.getItems(status)));
+    }
+
+    return new NotecardBrain(notecards, playerIndex);
   }
 }

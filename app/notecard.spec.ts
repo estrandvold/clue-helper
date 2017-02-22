@@ -18,13 +18,12 @@ describe('Notecard class tests', () => {
     items.push(new Item("Kitchen", status, type));
     items.push(new Item("Ballroom", status, type));
 
-    notecard = new Notecard("Tim", items, true);
+    notecard = new Notecard("Tim", items);
   });
 
   it('should create a Notecard', () => {
     expect(notecard.name).toBe("Tim");
     expect(notecard.items).toBe(items);
-    expect(notecard.canToggle).toBe(true);
   });
 
   it('should change the status of notecard items', () => {

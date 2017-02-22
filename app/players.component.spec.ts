@@ -114,7 +114,7 @@ describe('PlayersComponent tests', () => {
     comp.goToGame();
     fixture.detectChanges();
 
-    expect(routerStub.navigate).toHaveBeenCalledWith(["game"]);
+    expect(routerStub.navigate).toHaveBeenCalledWith(["items"]);
     expect(playersServiceStub.addPlayers).toHaveBeenCalledWith(["Eric", "Shenoa", "Glen"]);
   });
 

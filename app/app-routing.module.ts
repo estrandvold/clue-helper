@@ -7,6 +7,7 @@ import { InitialItemsComponent} from './initial-items.component';
 const routes: Routes = [
   { path: '', redirectTo: '/players', pathMatch: 'full' },
   { path: 'game',  component: AllNotecardsComponent },
+  { path: 'game/:items', component: AllNotecardsComponent },
   { path: 'players', component: PlayersComponent},
   { path: 'items', component: InitialItemsComponent}
 ];

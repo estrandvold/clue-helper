@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+
 import { ItemsService } from './items.service';
 import { Item } from './item';
 
@@ -16,7 +18,10 @@ export class InitialItemsComponent implements OnInit {
   private static readonly NO = "NO";
   private static readonly YES = "YES";
 
-  constructor(private itemsService: ItemsService) {
+  constructor(
+    private itemsService: ItemsService,
+    private router: Router
+  ) {
     this.suspects = [];
     this.weapons = [];
     this.rooms = [];
@@ -36,11 +41,27 @@ export class InitialItemsComponent implements OnInit {
     }
   }
 
-  public toggleItem(item: Item) {
+  public toggleItem(item: Item): void {
     if(item.status === InitialItemsComponent.NO) {
       item.status = InitialItemsComponent.YES;
     } else {
       item.status = InitialItemsComponent.NO;
     }
+  }
+
+  public goToGame(): void {
+    this.router.navigate(['game', this.listSelectedItems()]);
+  }
+
+  private listSelectedItems(): string {
+    let selectedItems: string[] = [];
+    for(let i = 0; i < this.items.length; i++) {
+      let item = this.items[i];
+      if(item.status === InitialItemsComponent.YES) {
+        selectedItems.push(item.name);
+      }
+    }
+
+    return selectedItems.join("|");
   }
 }

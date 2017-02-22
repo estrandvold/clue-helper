@@ -14,16 +14,23 @@
     </div>
     <div class="col-md-2">
       <div class="small-margin btn-group-vertical">
-        <label *ngFor="let weapon of weapons" class="btn btn-primary" btnCheckbox>
+        <label *ngFor="let weapon of weapons" class="btn btn-primary" btnCheckbox (click)="toggleItem(weapon)">
           {{weapon.name}}
         </label>
       </div>
     </div>
     <div class="col-md-2">
       <div class="small-margin btn-group-vertical">
-        <label *ngFor="let room of rooms" class="btn btn-primary" btnCheckbox>
+        <label *ngFor="let room of rooms" class="btn btn-primary" btnCheckbox (click)="toggleItem(room)">
           {{room.name}}
         </label>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <button (click)="goToGame()" id="continueButton" class="btn btn-success center-block" type="button">
+          Continue
+        </button>
       </div>
     </div>
   </div>

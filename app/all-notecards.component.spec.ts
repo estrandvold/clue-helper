@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed, async } from '@angular/core/testing';
 import { By }              from '@angular/platform-browser';
 import { DebugElement }    from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 
 import { AllNotecardsComponent } from './all-notecards.component';
 import { NotecardBrain } from './notecard-brain';
@@ -28,8 +29,12 @@ describe('AllNotecards Component tests', () => {
       getItems: (status?: string) => {
         return [
           new Item("Miss Scarlet", status, "SUSPECT"),
+          new Item("Mr. Green", status, "SUSPECT"),
           new Item("Wrench", status, "WEAPON"),
-          new Item("Kitchen", status, "ROOM")
+          new Item("Rope", status, "WEAPON"),
+          new Item("Kitchen", status, "ROOM"),
+          new Item("Study", status, "ROOM"),
+          new Item("Library", status, "ROOM")
         ];
       },
       getSuspects: () => {
@@ -43,13 +48,16 @@ describe('AllNotecards Component tests', () => {
       }
     }
 
+    let activatedRouteStub = {snapshot: {params: {items: "Miss Scarlet|Mr. Green"}}}
+
     TestBed.configureTestingModule({
       declarations: [
         AllNotecardsComponent
       ],
       providers: [
         {provide: PlayersService, useValue: playersServiceStub},
-        {provide: ItemsService, useValue: itemsServiceStub}
+        {provide: ItemsService, useValue: itemsServiceStub},
+        {provide: ActivatedRoute, useValue: activatedRouteStub}
       ],
     })
     .compileComponents();
@@ -78,10 +86,26 @@ describe('AllNotecards Component tests', () => {
     expect(playerNames[3]).toBe("Cindy");
   });
 
+  it('should mark inital items', () => {
+    fixture.detectChanges();
+    let items = comp.notecardBrain.getNotecards()[0].items;
+    for(var i = 0; i < 2; i++) {
+      expect(items[i].status).toEqual(YES);
+    }
+
+    let notecards = comp.notecardBrain.getNotecards();
+    for(var i = 1; i < notecards.length; i++) {
+      let items = notecards[i].items;
+      for(var j = 0; j < 2; j++) {
+        expect(items[j].status).toEqual(NO);
+      }
+    }
+  });
+
   it('should default my notecard to NO', () => {
     fixture.detectChanges();
     let items = comp.notecardBrain.getNotecards()[0].items;
-    for(var i = 0; i < items.length; i++) {
+    for(var i = 2; i < items.length; i++) {
       expect(items[i].status).toEqual(NO);
     }
   });
@@ -91,10 +115,30 @@ describe('AllNotecards Component tests', () => {
     let notecards = comp.notecardBrain.getNotecards();
     for(var i = 1; i < notecards.length; i++) {
       let items = notecards[i].items;
-      for(var j = 0; j < items.length; j++) {
+      for(var j = 2; j < items.length; j++) {
         expect(items[j].status).toEqual(UNKNOWN);
       }
     }
+  });
+
+  it('should mark items', () => {
+    fixture.detectChanges();
+    let items = comp.notecardBrain.getNotecards()[0].items;
+
+    comp.markItems([], 0);
+    for(var i = 2; i < items.length; i++) {
+      expect(items[i].status).toEqual(NO);
+    }
+
+    comp.markItems(["Rope"], 0);
+    fixture.detectChanges();
+    expect(items[3].status).toEqual(YES);
+
+    comp.markItems(["Kitchen", "Study"], 1);
+    fixture.detectChanges();
+    items = comp.notecardBrain.getNotecards()[1].items;
+    expect(items[4].status).toEqual(YES);
+    expect(items[5].status).toEqual(YES);
   });
 
   it('should toggle guessing', () => {
@@ -108,43 +152,6 @@ describe('AllNotecards Component tests', () => {
     fixture.detectChanges();
     de = fixture.debugElement.query(By.css(ID));
     expect(de).not.toBe(null);
-  });
-
-  it('should toggle player status', () => {
-    const MY_ID = "#status0-1";
-
-    fixture.detectChanges();
-    let notecards = comp.notecardBrain.getNotecards();
-
-    // Check my element is set to NO
-    let myElement = fixture.debugElement.query(By.css(MY_ID)).nativeElement;
-    expect(myElement.textContent).toContain(NO);
-
-    // After toggling my element should be set to YES
-    comp.toggleStatus(notecards[0], 1);
-    fixture.detectChanges();
-    expect(myElement.textContent).toContain(YES);
-
-    // After toggling my element should be set to NO
-    comp.toggleStatus(notecards[0], 1);
-    fixture.detectChanges();
-    expect(myElement.textContent).toContain(NO);
-  });
-
-  it('should not toggle other players status', () => {
-    const OTHER_ID = "#status1-1";
-
-    fixture.detectChanges();
-    let notecards = comp.notecardBrain.getNotecards();
-
-    // Check other player's element is set to UNKNOWN
-    let otherElement = fixture.debugElement.query(By.css(OTHER_ID)).nativeElement;
-    expect(otherElement.textContent).toContain(UNKNOWN);
-
-    // After toggling other player's element should not be allowed to change
-    comp.toggleStatus(notecards[1], 1);
-    fixture.detectChanges();
-    expect(otherElement.textContent).toContain(UNKNOWN);
   });
 
   it('should go to the next player', () => {
@@ -183,16 +190,16 @@ describe('AllNotecards Component tests', () => {
     comp.guessInformation.selectRoom("Kitchen");
     fixture.detectChanges();
 
-    expect(getTextContent("#status1-0")).toContain(UNKNOWN);
-    expect(getTextContent("#status1-1")).toContain(UNKNOWN);
+    expect(getTextContent("#status1-0")).toContain(NO);
     expect(getTextContent("#status1-2")).toContain(UNKNOWN);
+    expect(getTextContent("#status1-4")).toContain(UNKNOWN);
     expect(getTextContent("#revealPlayer")).toContain("Shenoa");
 
     comp.learnOpponentHasNone();
     fixture.detectChanges();
     expect(getTextContent("#status1-0")).toContain(NO);
-    expect(getTextContent("#status1-1")).toContain(NO);
     expect(getTextContent("#status1-2")).toContain(NO);
+    expect(getTextContent("#status1-4")).toContain(NO);
     expect(getTextContent("#revealPlayer")).toContain("Glen");
   });
 
@@ -201,11 +208,11 @@ describe('AllNotecards Component tests', () => {
     comp.guessing = true;
     fixture.detectChanges();
 
-    expect(getTextContent("#status1-2")).toContain(UNKNOWN);
+    expect(getTextContent("#status1-4")).toContain(UNKNOWN);
 
     comp.learnOpponentHasItem("Kitchen");
     fixture.detectChanges();
-    expect(getTextContent("#status1-2")).toContain(YES);
+    expect(getTextContent("#status1-4")).toContain(YES);
     expect(getTextContent("#currentPlayer")).toContain("Shenoa");
   });
 

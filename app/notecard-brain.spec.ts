@@ -14,7 +14,6 @@ describe('NotecardBrain class tests', () => {
 
     for(let i = 0; i < 3; i++) {
       let status = (i === playerIndex) ? Notecard.NO : Notecard.UNKNOWN;
-      let canToggle = (i === playerIndex) ? true : false;
       let items: Item[] = [];
       items.push(new Item("Miss Scarlet", status, "SUSPECT"));
       items.push(new Item("Professor Plum", status, "SUSPECT"));
@@ -24,7 +23,7 @@ describe('NotecardBrain class tests', () => {
       items.push(new Item("Ballroom", status, "ROOM"));
       items.push(new Item("Mr. Green", status, "SUSPECT"));
 
-      let notecard: Notecard = new Notecard("Player" + i, items, canToggle);
+      let notecard: Notecard = new Notecard("Player" + i, items);
       notecards.push(notecard);
     }
 
@@ -88,36 +87,6 @@ describe('NotecardBrain class tests', () => {
     notecardBrain.nextRevealPlayer();
     expect(notecardBrain.getActivePlayer()).toBe("Player0");
     expect(notecardBrain.getRevealPlayer()).toBe("Player1");
-  });
-
-  it('should update a player card', () => {
-    let itemIndex = 1;
-    let playerNotecard = notecardBrain.getNotecards()[playerIndex];
-
-    notecardBrain.updatePlayerCard(itemIndex);
-    expect(playerNotecard.items[itemIndex].status).toBe(Notecard.YES);
-
-    notecardBrain.updatePlayerCard(itemIndex);
-    expect(playerNotecard.items[itemIndex].status).toBe(Notecard.NO);
-  });
-
-  it('should update opponent cards when the player card is updated', () => {
-    let itemIndex = 1;
-    let notecards = notecardBrain.getNotecards();
-
-    notecardBrain.updatePlayerCard(itemIndex);
-    for(let i = 0; i < notecards.length; i++) {
-      if(i != playerIndex) {
-        expect(notecards[i].items[itemIndex].status).toBe(Notecard.NO);
-      }
-    }
-
-    notecardBrain.updatePlayerCard(itemIndex);
-    for(let i = 0; i < notecards.length; i++) {
-      if(i != playerIndex) {
-        expect(notecards[i].items[itemIndex].status).toBe(Notecard.UNKNOWN);
-      }
-    }
   });
 
   function createGuessInformation(suspect: string, weapon: string, room: string): GuessInformation {
