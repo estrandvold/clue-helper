@@ -8,6 +8,12 @@ import { NotecardBrain } from './notecard-brain';
 import { PlayersService } from './players.service';
 import { ItemsService } from './items.service';
 
+enum GUESS {
+  SUSPECT,
+  ROOM,
+  WEAPON
+}
+
 @Component({
   moduleId: module.id,
   selector: 'all-notecards',
@@ -15,11 +21,14 @@ import { ItemsService } from './items.service';
 })
 export class AllNotecardsComponent implements OnInit {
   items: Item[];
+  myItems: any;
   playerNames: string[];
   notecardBrain: NotecardBrain;
   guessInformation: GuessInformation;
   guessing: boolean;
   announcements: string[];
+  itemAnnouncements: string[];
+  GUESS_TYPES = GUESS;
 
   constructor(
     private route: ActivatedRoute,
@@ -38,13 +47,38 @@ export class AllNotecardsComponent implements OnInit {
     );
     this.notecardBrain = this.createNotecardBrain(PLAYER_INDEX);
     this.playerNames = this.notecardBrain.getPlayerNames();
-    this.markItems(this.route.snapshot.params['items'].split("|"), PLAYER_INDEX);
     this.guessing = false;
     this.announcements = [];
+
+    // Mark the items I start with and store them
+    let initialItems = this.route.snapshot.params['items'].split("|");
+    this.markItems(initialItems, PLAYER_INDEX);
+    this.myItems = this.createMyItemsObject(initialItems);
+    this.itemAnnouncements = ["", "", ""];
   }
 
   public toggleGuessing(): void {
     this.guessing = (this.guessing) ? false : true;
+  }
+
+  public guess(guessType: GUESS, item: string) {
+    let announcementIndex: number;
+
+    if(guessType === GUESS.SUSPECT) {
+      this.guessInformation.selectSuspect(item);
+      announcementIndex = 0;
+    } else if(guessType === GUESS.WEAPON) {
+      this.guessInformation.selectWeapon(item);
+      announcementIndex = 1;
+    } else if(guessType === GUESS.ROOM) {
+      this.guessInformation.selectRoom(item);
+      announcementIndex = 2;
+    }
+
+    this.itemAnnouncements[announcementIndex] = "";
+    if(this.myItems.hasOwnProperty(item)) {
+      this.itemAnnouncements[announcementIndex] = "You have " + item + ". ";
+    }
   }
 
   public nextPlayer(): void {
@@ -69,11 +103,13 @@ export class AllNotecardsComponent implements OnInit {
   public learnOpponentHasItem(item: string): void {
     this.announcements.unshift(...this.notecardBrain.opponentHasItem(item));
     this.nextPlayer();
+    this.itemAnnouncements = ["", "", ""];
   }
 
   public learnOpponentHasSomething(): void {
     this.announcements.unshift(...this.notecardBrain.opponentHasOr(this.guessInformation));
     this.nextPlayer();
+    this.itemAnnouncements = ["", "", ""];
   }
 
   public getRowStyle(item: string): string {
@@ -99,5 +135,14 @@ export class AllNotecardsComponent implements OnInit {
     }
 
     return new NotecardBrain(notecards, playerIndex);
+  }
+
+  private createMyItemsObject(myItems: string[]): any {
+    let result = {};
+    for(let i = 0; i < myItems.length; i++) {
+      result[myItems[i]] = true;
+    }
+
+    return result;
   }
 }

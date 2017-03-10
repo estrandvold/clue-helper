@@ -43,7 +43,7 @@
                 Suspect <span class="caret"></span>
               </button>
               <ul dropdownMenu role="menu" aria-labelledby="single-button">
-                <li *ngFor="let suspect of guessInformation.suspects" (click)="guessInformation.selectSuspect(suspect)" role="menuitem"><a class="dropdown-item" role="button">{{suspect}}</a></li>
+                <li *ngFor="let suspect of guessInformation.suspects" (click)="guess(GUESS_TYPES.SUSPECT, suspect)" role="menuitem"><a class="dropdown-item" role="button">{{suspect}}</a></li>
               </ul>
             </div>
             {{guessInformation.selectedSuspect}}
@@ -56,7 +56,7 @@
                 Weapon <span class="caret"></span>
               </button>
               <ul dropdownMenu role="menu" aria-labelledby="single-button">
-                <li *ngFor="let weapon of guessInformation.weapons" (click)="guessInformation.selectWeapon(weapon)" role="menuitem"><a class="dropdown-item" role="button">{{weapon}}</a></li>
+                <li *ngFor="let weapon of guessInformation.weapons" (click)="guess(GUESS_TYPES.WEAPON, weapon)" role="menuitem"><a class="dropdown-item" role="button">{{weapon}}</a></li>
               </ul>
             </div>
             {{guessInformation.selectedWeapon}}
@@ -69,7 +69,7 @@
                 Room <span class="caret"></span>
               </button>
               <ul dropdownMenu role="menu" aria-labelledby="single-button">
-                <li *ngFor="let room of guessInformation.rooms" (click)="guessInformation.selectRoom(room)" role="menuitem"><a class="dropdown-item" role="button">{{room}}</a></li>
+                <li *ngFor="let room of guessInformation.rooms" (click)="guess(GUESS_TYPES.ROOM, room)" role="menuitem"><a class="dropdown-item" role="button">{{room}}</a></li>
               </ul>
             </div>
             {{guessInformation.selectedRoom}}
@@ -100,6 +100,13 @@
               <button (click)="learnOpponentHasSomething()" class="btn btn-primary">Yes</button>
             </div>
           </div>
+        </div>
+      </div>
+      <div class ="row">
+        <div class="col-md-12">
+          <p>
+            {{itemAnnouncements[0] + itemAnnouncements[1] + itemAnnouncements[2]}}
+          </p>
         </div>
       </div>
       <div class="row">

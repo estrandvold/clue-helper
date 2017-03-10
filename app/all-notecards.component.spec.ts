@@ -102,6 +102,13 @@ describe('AllNotecards Component tests', () => {
     }
   });
 
+  it('should track my items', () => {
+    fixture.detectChanges();
+    expect(Object.keys(comp.myItems).length).toEqual(2);
+    expect(comp.myItems["Miss Scarlet"]).toEqual(true);
+    expect(comp.myItems["Mr. Green"]).toEqual(true);
+  });
+
   it('should default my notecard to NO', () => {
     fixture.detectChanges();
     let items = comp.notecardBrain.getNotecards()[0].items;
@@ -227,6 +234,35 @@ describe('AllNotecards Component tests', () => {
 
     fixture.detectChanges();
     expect(getTextContent("#currentPlayer")).toContain("Shenoa");
+  });
+
+  it('should display when an opponent guesses an item I have', () => {
+    fixture.detectChanges();
+    expect(comp.itemAnnouncements).toEqual(["", "", ""]);
+
+    comp.guess(comp.GUESS_TYPES.SUSPECT, "Miss Scarlet");
+    fixture.detectChanges();
+    expect(comp.itemAnnouncements).toEqual(["You have Miss Scarlet. ", "", ""]);
+
+    comp.guess(comp.GUESS_TYPES.WEAPON, "Wrench");
+    comp.guess(comp.GUESS_TYPES.ROOM, "Kitchen");
+    fixture.detectChanges();
+    expect(comp.itemAnnouncements).toEqual(["You have Miss Scarlet. ", "", ""]);
+
+    comp.myItems["Wrench"] = true;
+    comp.myItems["Kitchen"] = true;
+    comp.guess(comp.GUESS_TYPES.WEAPON, "Wrench");
+    comp.guess(comp.GUESS_TYPES.ROOM, "Kitchen");
+    fixture.detectChanges();
+    expect(comp.itemAnnouncements).toEqual(["You have Miss Scarlet. ", "You have Wrench. ", "You have Kitchen. "]);
+
+    // Test that announcements are cleared when a new guess happens
+    delete comp.myItems["Mr. Green"];
+    comp.guess(comp.GUESS_TYPES.SUSPECT, "Mr. Green");
+    comp.guess(comp.GUESS_TYPES.WEAPON, "Rope");
+    comp.guess(comp.GUESS_TYPES.ROOM, "Study");
+    fixture.detectChanges();
+    expect(comp.itemAnnouncements).toEqual(["", "", ""]);
   });
 
   it('should calculate row styles when an item is found', () => {
