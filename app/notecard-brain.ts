@@ -39,12 +39,24 @@ export class NotecardBrain {
     return names;
   }
 
+  getMainPlayerName(): string {
+    return this.notecards[this.playerIndex].name;
+  }
+
   getActivePlayer(): string {
     return this.notecards[this.activePlayer].name;
   }
 
   getRevealPlayer(): string {
     return this.notecards[this.revealPlayer].name;
+  }
+
+  isMyTurn(): boolean {
+    return (this.activePlayer === this.playerIndex) ? true : false;
+  }
+
+  isMyReveal(): boolean {
+    return (this.revealPlayer === this.playerIndex) ? true : false;
   }
 
   nextPlayer(): void {

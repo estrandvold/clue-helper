@@ -47,6 +47,10 @@ describe('NotecardBrain class tests', () => {
     expect(notecardBrain.getItemStatus("Knife")).toEqual(NotecardBrain.UNKNOWN);
   });
 
+  it('should get the name of the main player', () => {
+    expect(notecardBrain.getMainPlayerName()).toEqual("Player0");
+  });
+
   it('should be able to go to the next player', () => {
     notecardBrain.nextPlayer();
     expect(notecardBrain.getActivePlayer()).toBe("Player1");
@@ -73,6 +77,23 @@ describe('NotecardBrain class tests', () => {
     notecardBrain.previousPlayer();
     expect(notecardBrain.getActivePlayer()).toBe("Player0");
     expect(notecardBrain.getRevealPlayer()).toBe("Player1");
+  });
+
+  it('should be able to test if the current player is me', () => {
+    expect(notecardBrain.isMyTurn()).toBe(true);
+
+    notecardBrain.nextPlayer();
+    expect(notecardBrain.isMyTurn()).toBe(false);
+  });
+
+  it('should be able to test if the reveal player is me', () => {
+    expect(notecardBrain.isMyReveal()).toBe(false);
+
+    notecardBrain.nextPlayer();
+    expect(notecardBrain.isMyReveal()).toBe(false);
+
+    notecardBrain.nextPlayer();
+    expect(notecardBrain.isMyReveal()).toBe(true);
   });
 
   it('should be able to go to the next player who will reveal cards', () => {

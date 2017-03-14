@@ -105,8 +105,8 @@ describe('AllNotecards Component tests', () => {
   it('should track my items', () => {
     fixture.detectChanges();
     expect(Object.keys(comp.myItems).length).toEqual(2);
-    expect(comp.myItems["Miss Scarlet"]).toEqual(true);
-    expect(comp.myItems["Mr. Green"]).toEqual(true);
+    expect(comp.myItems["Miss Scarlet"]).toEqual({ ME: false, Shenoa: false, Glen: false, Cindy: false });
+    expect(comp.myItems["Mr. Green"]).toEqual({ ME: false, Shenoa: false, Glen: false, Cindy: false });
   });
 
   it('should default my notecard to NO', () => {
@@ -263,6 +263,29 @@ describe('AllNotecards Component tests', () => {
     comp.guess(comp.GUESS_TYPES.ROOM, "Study");
     fixture.detectChanges();
     expect(comp.itemAnnouncements).toEqual(["", "", ""]);
+  });
+
+  it('should display when I have told an opponent one of my cards', () => {
+    fixture.detectChanges();
+    comp.notecardBrain.nextPlayer(); // Shenoa
+    comp.notecardBrain.nextPlayer(); // Glen
+
+    // Glen makes a guess that Cindy has none, but I have Scarlet
+    comp.guess(comp.GUESS_TYPES.SUSPECT, "Miss Scarlet");
+    comp.guess(comp.GUESS_TYPES.WEAPON, "Rope");
+    comp.guess(comp.GUESS_TYPES.ROOM, "Study");
+    comp.learnOpponentHasNone(); // Cindy doesn't have anything
+    comp.learnOpponentHasItem("Miss Scarlet"); // I have Scarlet
+
+    // Cindy guesses and also learns that I have Scarlet
+    comp.learnOpponentHasItem("Miss Scarlet");
+    comp.notecardBrain.nextPlayer();
+
+    comp.guess(comp.GUESS_TYPES.SUSPECT, "Miss Scarlet");
+    comp.guess(comp.GUESS_TYPES.WEAPON, "Rope");
+    comp.guess(comp.GUESS_TYPES.ROOM, "Study");
+    fixture.detectChanges();
+    expect(comp.itemAnnouncements).toEqual(["You have Miss Scarlet and have shown it to Glen and have shown it to Cindy. ", "", ""]);
   });
 
   it('should calculate row styles when an item is found', () => {

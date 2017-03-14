@@ -76,9 +76,7 @@ export class AllNotecardsComponent implements OnInit {
     }
 
     this.itemAnnouncements[announcementIndex] = "";
-    if(this.myItems.hasOwnProperty(item)) {
-      this.itemAnnouncements[announcementIndex] = "You have " + item + ". ";
-    }
+    this.itemAnnouncements[announcementIndex] = this.createMyItemString(item);
   }
 
   public nextPlayer(): void {
@@ -101,6 +99,10 @@ export class AllNotecardsComponent implements OnInit {
   }
 
   public learnOpponentHasItem(item: string): void {
+    if(this.notecardBrain.isMyReveal()) {
+      this.updateMyItems(item, this.notecardBrain.getActivePlayer());
+    }
+
     this.announcements.unshift(...this.notecardBrain.opponentHasItem(item));
     this.nextPlayer();
     this.itemAnnouncements = ["", "", ""];
@@ -140,9 +142,35 @@ export class AllNotecardsComponent implements OnInit {
   private createMyItemsObject(myItems: string[]): any {
     let result = {};
     for(let i = 0; i < myItems.length; i++) {
-      result[myItems[i]] = true;
+      result[myItems[i]] = {};
+      for(let j = 0; j < this.playerNames.length; j++) {
+        result[myItems[i]][this.playerNames[j]] = false;
+      }
     }
 
     return result;
+  }
+
+  private createMyItemString(item: string): string {
+    let result = "";
+    if(this.myItems.hasOwnProperty(item)) {
+      result = "You have " + item;
+
+      let myItem = this.myItems[item];
+      for(let prop in myItem) {
+        if(myItem.hasOwnProperty(prop) &&
+           prop != this.notecardBrain.getMainPlayerName() &&
+           myItem[prop] === true) {
+             result = result + " and have shown it to " + prop;
+        }
+      }
+
+      result = result + ". ";
+    }
+    return result;
+  }
+
+  private updateMyItems(item: string, opponent: string): void {
+    this.myItems[item][opponent] = true;
   }
 }
