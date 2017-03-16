@@ -68,4 +68,16 @@ export class ItemsService {
   getRooms(): string[] {
     return this.rooms.slice(0);
   }
+
+  updateSuspects(suspects: string[]): void {
+    this.suspects = suspects.slice(0);
+  }
+
+  updateWeapons(weapons: string[]): void {
+    this.weapons = weapons.slice(0);
+  }
+
+  updateRooms(rooms: string[]): void {
+    this.rooms = rooms.slice(0);
+  }
 }
