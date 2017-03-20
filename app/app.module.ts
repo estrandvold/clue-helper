@@ -10,6 +10,7 @@ import { AppComponent }  from './app.component';
 import { AllNotecardsComponent } from './all-notecards.component';
 import { PlayersComponent } from './players.component';
 import { InitialItemsComponent} from './initial-items.component';
+import { ArrayViewComponent } from './array-view.component';
 import { PlayersService } from './players.service';
 import { ItemsService } from './items.service';
 
@@ -25,7 +26,8 @@ import { ItemsService } from './items.service';
     AppComponent,
     AllNotecardsComponent,
     PlayersComponent,
-    InitialItemsComponent
+    InitialItemsComponent,
+    ArrayViewComponent
   ],
   providers: [
     PlayersService,

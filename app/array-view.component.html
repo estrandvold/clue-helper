@@ -1,0 +1,7 @@
+<div class="input-group" *ngFor="let str of strings; let i = index">
+  <input type="text" class="form-control" [(ngModel)]="str.name">
+  <span class="input-group-btn">
+    <button id="delete{{i}}Button"class="btn btn-default" type="button" (click)="delete(i)">Delete</button>
+  </span>
+</div>
+<button id="newButton" class="btn btn-default" type="button" (click)="add()">New</button>
