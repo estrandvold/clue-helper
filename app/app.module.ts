@@ -4,6 +4,7 @@ import { FormsModule }   from '@angular/forms';
 
 import { DropdownModule } from 'ng2-bootstrap';
 import { ButtonsModule } from 'ng2-bootstrap';
+import { ModalModule } from 'ng2-bootstrap';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent }  from './app.component';
@@ -18,6 +19,7 @@ import { ItemsService } from './items.service';
   imports: [
     BrowserModule,
     FormsModule,
+    ModalModule.forRoot(),
     DropdownModule.forRoot(),
     ButtonsModule.forRoot(),
     AppRoutingModule

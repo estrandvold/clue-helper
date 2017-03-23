@@ -2,8 +2,12 @@ import { ComponentFixture, TestBed, async } from '@angular/core/testing';
 import { By }              from '@angular/platform-browser';
 import { DebugElement }    from '@angular/core';
 import { Router } from '@angular/router';
+import { FormsModule }   from '@angular/forms';
+import { ModalModule } from 'ng2-bootstrap';
 
 import { InitialItemsComponent } from './initial-items.component';
+import { ArrayViewComponent } from './array-view.component';
+import { ArrayViewItem } from './array-view-item';
 import { ItemsService } from './items.service';
 import { Item } from './item';
 
@@ -24,7 +28,19 @@ describe('InitialItemsComponent tests', () => {
           new Item("Wrench", status, "WEAPON"),
           new Item("Kitchen", status, "ROOM")
         ];
-      }
+      },
+      getSuspects: () => {
+        return ["Miss Scarlet"]
+      },
+      getWeapons: () => {
+        return ["Wrench"]
+      },
+      getRooms: () => {
+        return ["Kitchen"]
+      },
+      updateSuspects: (suspects: string[]) => {},
+      updateWeapons: (weapons: string[]) => {},
+      updateRooms: (rooms: string[]) => {}
     };
 
     routerStub = {
@@ -32,14 +48,25 @@ describe('InitialItemsComponent tests', () => {
     };
 
     spyOn(routerStub, 'navigate');
+    spyOn(itemsServiceStub, 'updateSuspects');
+    spyOn(itemsServiceStub, 'updateWeapons');
+    spyOn(itemsServiceStub, 'updateRooms');
+    spyOn(itemsServiceStub, 'getSuspects').and.callThrough();
+    spyOn(itemsServiceStub, 'getWeapons').and.callThrough();
+    spyOn(itemsServiceStub, 'getRooms').and.callThrough();
 
     TestBed.configureTestingModule({
       declarations: [
-        InitialItemsComponent
+        InitialItemsComponent,
+        ArrayViewComponent
       ],
       providers: [
         {provide: ItemsService, useValue: itemsServiceStub},
         {provide: Router, useValue: routerStub}
+      ],
+      imports: [
+        FormsModule,
+        ModalModule.forRoot()
       ]
     })
     .compileComponents();
@@ -67,6 +94,55 @@ describe('InitialItemsComponent tests', () => {
 
     comp.toggleItem(item);
     expect(item.status).toBe("NO");
+  });
+
+  it('should show a modal to edit items', () => {
+    spyOn(comp.childModal, 'show');
+
+    fixture.detectChanges();
+    comp.editItems();
+    fixture.detectChanges();
+    expect(comp.childModal.show).toHaveBeenCalled();
+  });
+
+  it('should allow cancelling from the modal', () => {
+    spyOn(comp.childModal, 'hide');
+
+    fixture.detectChanges();
+    comp.closeChildModal();
+    fixture.detectChanges();
+
+    // Expect modal to be closed
+    expect(comp.childModal.hide).toHaveBeenCalled();
+
+    // Expect updates to have NOT been called
+    expect(itemsServiceStub.updateSuspects).not.toHaveBeenCalled();
+    expect(itemsServiceStub.updateWeapons).not.toHaveBeenCalled();
+    expect(itemsServiceStub.updateRooms).not.toHaveBeenCalled();
+  });
+
+  it('should update the item service after editing in the modal', () => {
+    spyOn(comp.childModal, 'hide');
+
+    fixture.detectChanges();
+    comp.suspectNames = [new ArrayViewItem("Bob")];
+    comp.weaponNames = [new ArrayViewItem("Angry Moose")];
+    comp.roomNames = [new ArrayViewItem("Basement")];
+    comp.updateItemsFromModal();
+    fixture.detectChanges();
+
+    // Expect service to have been called to update items
+    expect(itemsServiceStub.updateSuspects).toHaveBeenCalledWith(["Bob"]);
+    expect(itemsServiceStub.updateWeapons).toHaveBeenCalledWith(["Angry Moose"]);
+    expect(itemsServiceStub.updateRooms).toHaveBeenCalledWith(["Basement"]);
+
+    // Expect modal to be closed
+    expect(comp.childModal.hide).toHaveBeenCalled();
+
+    // Expect item list to be updated
+    expect(itemsServiceStub.getSuspects).toHaveBeenCalled();
+    expect(itemsServiceStub.getWeapons).toHaveBeenCalled();
+    expect(itemsServiceStub.getRooms).toHaveBeenCalled();
   });
 
   it('should navigate to the correct url', () => {
